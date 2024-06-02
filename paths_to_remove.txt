@@ -1,0 +1,5 @@
+build/app/outputs/apk/debug/app-debug.apk
+build/app/intermediates/merged_native_libs/debug/out/lib/arm64-v8a/libVkLayer_khronos_validation.so
+build/app/intermediates/incremental/debug-mergeJavaRes/zip-cache/oFMA9Ep3hlArw9MSHnf0GXG0sxo=
+build/c4c2fe0666a8af71e108614a2500861d.cache.dill.track.dill
+.dart_tool/flutter_build/d1e2389002085d613082aa083b2a6045/app.dill
