@@ -17,8 +17,6 @@ class ColorResources {
   static Color blackColor = Color(0xff000000);
   static Color whiteColor = Colors.white;
   static Color transparentColor = Colors.transparent;
-  static Color primaryColor = Colors.orange.shade900; //Color(0xff2D5093);
-  // static Color primaryColor = Color(0xFF2792D1);
-  //static Color primaryColor = Color.fromRGBO(29,59,89,1);
+  static Color primaryColor = Color.fromRGBO(232,90,91, 1);
   static Color secondaryColor = Colors.white;
 }

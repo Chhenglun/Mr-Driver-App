@@ -10,6 +10,7 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
+import 'package:scholarar/view/screen/account/signin_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -37,14 +38,13 @@ class _SplashScreenState extends State<SplashScreen> {
           });
         } else {
           print("Logout Token: ");
-          nextScreenReplace(context, AppScreen());
+          nextScreenReplace(context, SignINScreen());
         }
       } catch (e) {
         print('else');
         Timer(Duration(seconds: 5), () {
           nextScreenReplace(Get.context, AppScreen());
         });
-        
       }
     }
   }
@@ -58,13 +58,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: ColorResources.whiteColor,
-        body: Center(
-            child: Image(
+      backgroundColor: ColorResources.whiteColor,
+      body: Center(
+        child: Image(
           width: 300,
           height: 300,
           image: AssetImage(AppConstants.logo),
           fit: BoxFit.contain,
-        )));
+        ),
+      ),
+    );
   }
 }
