@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
 import 'dart:io';
 
@@ -29,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _image = selectedImage;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,14 +138,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               icon: Icon(Icons.photo),
                               label: Text("Select from Gallery"),
                             ),
-
-                            // GestureDetector(
-                            //   child: Text("Select from Gallery"),
-                            //   onTap: () {
-                            //     pickImage(ImageSource.gallery);
-                            //     Get.back();
-                            //   },
-                            // ),
                             Padding(padding: EdgeInsets.all(8.0)),
                             TextButton.icon(
                               onPressed: () {
@@ -221,6 +214,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 iconleading: Icons.location_on,
                 onPress: () {},
               ),
+              SizedBox(height: 20),
+             Container(
+              height: 40,
+              width: Get.width * 0.8,
+                padding: EdgeInsets.symmetric(horizontal: 32),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text(
+                    'កែប្រែព័ត៌មានផ្ទាល់ខ្លួន',
+                    style: TextStyle(
+                      color: ColorResources.redColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    iconColor: ColorResources.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+             ),
+
               SizedBox(height: 16),
             ],
           ),

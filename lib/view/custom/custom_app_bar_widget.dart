@@ -8,8 +8,6 @@ import 'package:scholarar/util/style.dart';
 import 'package:scholarar/view/screen/notification/notification_screen.dart';
 import 'package:scholarar/view/screen/search/search_screen.dart';
 
-import '../screen/account/login_screen.dart';
-
 class CustomAppbarWidget {
   // Todo: buildButtonClick
   static AppBar buildAppBar(
