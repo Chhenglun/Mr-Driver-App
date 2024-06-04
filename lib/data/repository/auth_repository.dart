@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_final_fields
 
+import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:scholarar/data/api/api_client.dart';
 import 'package:scholarar/data/model/body/auth_model.dart';
@@ -79,6 +80,18 @@ class AuthRepository {
     } catch (e) {
       throw e.toString();
     }
+  }
+  Future<Response> loginWithEmailNew(String email , String password, BuildContext context) async {
+    try {
+      Response response = await dioClient.postData(AppConstants.loginUrlNew, {
+        'email': email,
+        'password': password,
+      });
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+
   }
 
   Future<Response> changeAvatar(String uuid) async {
