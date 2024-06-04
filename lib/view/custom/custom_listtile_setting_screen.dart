@@ -1,6 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 //import 'package:google_fonts/google_fonts.dart';
@@ -61,15 +59,12 @@ class CustomListWidget {
       ),
       child: ListTile(
         leading: Icon(iconleading, color: ColorResources.primaryColor,) ,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 12.0),
-          child: Text(
-            title,
-            style: textStyleMedium.copyWith(
-              fontSize: 18,
-              color: ColorResources.primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
+        title: Text(
+          title,
+          style: textStyleMedium.copyWith(
+            fontSize: 18,
+            color: ColorResources.primaryColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
         titleAlignment: ListTileTitleAlignment.center,

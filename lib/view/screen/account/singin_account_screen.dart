@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
@@ -15,10 +16,11 @@ class SigninAccountScreen extends StatefulWidget {
 }
 
 class _SigninAccountScreenState extends State<SigninAccountScreen> {
+  AuthController authController = Get.find<AuthController>();
   final phoneNumberForcusNode = FocusNode();
   final passwordForcusNode = FocusNode();
-  var phoneController = TextEditingController().obs;
-  var passwordController = TextEditingController().obs;
+  final _emailControlle = TextEditingController().obs;
+  final _passwordController = TextEditingController().obs;
   var obscureText = true.obs;
   final _form = GlobalKey<FormState>();
   var enterPassword = "";
@@ -26,6 +28,12 @@ class _SigninAccountScreenState extends State<SigninAccountScreen> {
 
   void togglePasswordVisibility() {
     obscureText.value = !obscureText.value;
+  }
+  bool isValidEmail(String email) {
+    final RegExp regex = RegExp(
+        r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$'
+    );
+    return regex.hasMatch(email);
   }
 
   Future<void> submit() async {
@@ -78,7 +86,7 @@ class _SigninAccountScreenState extends State<SigninAccountScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "លេខទូរសព្ទ",
+                              "អ៊ីម៉ែល",
                               style:
                                   TextStyle(color: ColorResources.blackColor),
                             ),
@@ -86,6 +94,7 @@ class _SigninAccountScreenState extends State<SigninAccountScreen> {
                             SizedBox(
                               height: 60,
                               child: TextFormField(
+                                controller: _emailControlle.value,
                                 keyboardType: TextInputType.phone,
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) =>
@@ -93,7 +102,7 @@ class _SigninAccountScreenState extends State<SigninAccountScreen> {
                                 decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.phone),
                                   // labelText: 'Phone Number',
-                                  hintText: 'Enter your phone number',
+                                  hintText: 'Enter your Email ',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -105,7 +114,7 @@ class _SigninAccountScreenState extends State<SigninAccountScreen> {
                                   }
                                   return null;
                                 },
-                                onSaved: (newValue) => enterPhone = newValue!,
+                               // onSaved: (newValue) =>  = newValue!,
                               ),
                             ),
                           ],
@@ -127,7 +136,7 @@ class _SigninAccountScreenState extends State<SigninAccountScreen> {
                                 child: TextFormField(
                                   focusNode: passwordForcusNode,
                                   cursorColor: Colors.blueGrey,
-                                  controller: passwordController.value,
+                                  controller: _passwordController.value,
                                   obscureText: obscureText.value,
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.lock),
@@ -178,14 +187,20 @@ class _SigninAccountScreenState extends State<SigninAccountScreen> {
                             height: 50,
                             width: double.infinity,
                             child: TextButton(
-                              onPressed: () {
-                                nextScreenNoReturn(context, AppScreen());
-                                submit();
-                              },
+                              onPressed: () async{
+                                if(_form.currentState!.validate()){
+                                  if(_emailControlle.value.text.isNotEmpty && _passwordController.value.text.isNotEmpty){
+                                    await authController.loginWithEmailNew(context, email:_emailControlle.value.text, password:_passwordController.value.text);
+                                }else{
+                                  Get.snackbar('Error', 'Please enter valid email and password');
+                                }
+                                // nextScreenNoReturn(context, AppScreen());
+                                // submit();
+                              }},
                               child: Text(
                                 'ចូលគណនី',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
+                                    color: Colors.white, fontSize: 20,),
                               ),
                               style: TextButton.styleFrom(
                                 backgroundColor: ColorResources.primaryColor,
