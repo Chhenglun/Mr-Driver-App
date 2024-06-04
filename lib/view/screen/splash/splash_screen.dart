@@ -12,6 +12,8 @@ import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/account/signin_screen.dart';
 import 'package:scholarar/view/screen/account/singin_account_screen.dart';
+import 'package:scholarar/view/screen/booking/home.dart';
+import 'package:scholarar/view/screen/booking/tracking.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -44,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } catch (e) {
         print('else');
         Timer(Duration(seconds: 5), () {
-          nextScreenReplace(Get.context, SigninAccountScreen());
+          nextScreenReplace(Get.context, HomeScreen());
         });
       }
     }

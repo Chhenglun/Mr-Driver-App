@@ -9,7 +9,7 @@ import 'package:scholarar/data/model/response/language_model.dart';
 class AppConstants {
   static const String theme = "authenticator_theme";
   static const String appName = "Authenticator";
-  static const String baseURL = "https://scholarar-dev.seksa.today";
+  static const String baseURL = "";
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";
   static const String register = "/api/v1/register";
@@ -31,6 +31,7 @@ class AppConstants {
   static const String getSubscription = "api/subscription";
 
   // auth
+  static const String google_key_api = "AIzaSyBFNAY84AgLd1BMoYCeH-tSLkZ5m1_6v3A";
   static const String phoneSignIn = "";
   static const String sendVerificationSMS = "";
   static const String verificationCode = "";

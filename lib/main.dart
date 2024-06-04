@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_constructors, avoid_print, no_leading_underscores_for_local_identifiers, prefer_const_literals_to_create_immutables, await_only_futures
 
 import 'dart:io';
 
