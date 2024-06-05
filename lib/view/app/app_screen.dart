@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/controller/splash_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
+import 'package:scholarar/view/screen/booking/open_booking.dart';
 import 'package:scholarar/view/screen/booking/tracking.dart';
 import 'package:scholarar/view/screen/chat/chat_screen.dart';
 import 'package:scholarar/view/screen/home/home_screen.dart';
@@ -22,7 +23,7 @@ class _AppScreenState extends State<AppScreen> {
   List<Widget>? listScreen;
   final PageController _pageController = PageController();
   final HomeScreen _homeScreen = HomeScreen();
-  final Tracking _bookingScreen = Tracking();
+  final OpenBooking _liveTracking = OpenBooking();
   final ChatScreen _chatScreen = ChatScreen();
   final ProfileScreen _profileScreen = ProfileScreen();
   // final ScholarshipScreen _scholarshipScreen = ScholarshipScreen();
@@ -33,7 +34,7 @@ class _AppScreenState extends State<AppScreen> {
   void initState() {
     listScreen = [
       _homeScreen,
-      _bookingScreen,
+      _liveTracking,
       _chatScreen,
       _profileScreen,
     ];

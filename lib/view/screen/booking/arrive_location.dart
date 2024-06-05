@@ -6,17 +6,16 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/booking/arrive_location.dart';
 
-class BookingScreen extends StatefulWidget {
-  const BookingScreen({super.key});
+
+class ArriveScreen extends StatefulWidget {
+  const ArriveScreen({super.key});
 
   @override
-  State<BookingScreen> createState() => _BookingScreenState();
+  State<ArriveScreen> createState() => _ArriveScreenState();
 }
 
-class _BookingScreenState extends State<BookingScreen> {
+class _ArriveScreenState extends State<ArriveScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   static const LatLng destination = LatLng(11.544, 104.8112);
   List<LatLng> polyLineCoordinates = [];
@@ -162,7 +161,8 @@ class _BookingScreenState extends State<BookingScreen> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                      height: MediaQuery.sizeOf(context).height * 3 / 8,
+                    padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                      height: MediaQuery.sizeOf(context).height * 3 / 9,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -172,40 +172,40 @@ class _BookingScreenState extends State<BookingScreen> {
                         children: [
                           Row(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10, bottom: 5, left: 20),
+                              Container(
+                                height: 70,
+                                  width: 70,
+                                  child: Image(image: NetworkImage(url,))
+                              ),
+                              SizedBox(width: 20,),
+                              Text("User123",style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 3.5,
+                                margin: EdgeInsets.symmetric(horizontal: 35),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text('120វិនាទី',style: TextStyle(color: Colors.red,fontSize: 12),),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.green[500]
+                                      ),
+                                        child: IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.phone_fill,color: Colors.white,))),
+                                    SizedBox(width: 20,),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.green[500]
+                                        ),
+                                        child: IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.chat_bubble_fill,color: Colors.white,)))
                                   ],
                                 ),
                               ),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[300]),
-                                    onPressed: (){}, child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 15,horizontal: 50),
-                                      child: Text("12000រៀល",style: TextStyle(color: Colors.black,fontSize: 20),),
-                                    )),
-                              )
                             ],
                           ),
                           SizedBox(height: 20,),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              children: [
-                                Icon(CupertinoIcons.location_fill,color: Colors.blue,),
-                                SizedBox(width: 20,),
-                                Text("ចម្ងាយ 200m ពីភ្ញៀវ",style: TextStyle(color: Colors.blue),)
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20,),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
                             child: Row(
                               children: [
                                 Icon(CupertinoIcons.map_pin_ellipse,color: Colors.black,),
@@ -216,7 +216,7 @@ class _BookingScreenState extends State<BookingScreen> {
                           ),
                           SizedBox(height: 20,),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
                             child: Row(
                               children: [
                                 Icon(CupertinoIcons.stop_circle_fill,color: Colors.red,),
@@ -231,12 +231,12 @@ class _BookingScreenState extends State<BookingScreen> {
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green[500]),
                                 onPressed: () {
-                                  nextScreen(context, ArriveScreen());
+
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.symmetric(vertical: 16,),
-                                  child: Text("ទទួលការកក់",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
+                                  child: Text("បានមកដល់ទីតាំង",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
                                 )
                             ),
                           )

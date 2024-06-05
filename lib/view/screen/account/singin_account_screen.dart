@@ -95,7 +95,7 @@ class _SigninAccountScreenState extends State<SigninAccountScreen> {
                               height: 60,
                               child: TextFormField(
                                 controller: _emailControlle.value,
-                                keyboardType: TextInputType.phone,
+                                keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) =>
                                     phoneNumberForcusNode.requestFocus(),
