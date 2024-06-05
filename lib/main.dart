@@ -1,4 +1,6 @@
 
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -15,15 +17,16 @@ import 'package:scholarar/theme/light_theme.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/messages.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
+import 'firebase_options.dart';
 
 import 'helper/get_di.dart' as di;
 
 late List<CameraDescription> cameras;
 Future<void> main(context) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   cameras = await availableCameras();
   await di.init();
