@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
           });
         } else {
           print("Logout Token: ");
-          nextScreenReplace(context, SignINScreen());
+          nextScreenReplace(context, SigninAccountScreen());
         }
       } catch (e) {
         print('else');

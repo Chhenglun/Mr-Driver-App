@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCuD_7nUWnRo39f1bEPxGXRfR6dwzPZMQ4',
-    appId: '1:327925279311:android:746df36636eccd351cd83a',
+    appId: '1:327925279311:android:09cf4bcaa1e1005f1cd83a',
     messagingSenderId: '327925279311',
     projectId: 'driver-app-6dc24',
     storageBucket: 'driver-app-6dc24.appspot.com',
