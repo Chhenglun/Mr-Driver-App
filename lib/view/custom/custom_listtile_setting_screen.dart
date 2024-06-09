@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 //import 'package:google_fonts/google_fonts.dart';
 import 'package:scholarar/util/color_resources.dart';
@@ -9,31 +10,34 @@ class CustomListWidget {
   //Todo: customListTileSettingScreen
   static Widget customListTileSettingScreen({
     required String title,
+    Widget? titleColors,
     required IconData icon,
-    required trailing,
+    //required trailing,
     bool isSwitched = false,
     required Function onPress,
     Function(bool)? onChange,
+    //required Function onTap,
   }) {
     return ListTile(
       leading: Icon(
         icon,
-        color: ColorResources.blackColor,
-        size: 22,
+        color: Colors.blueGrey,
+        //size: 22,
       ),
-      title: Padding(
-        padding: const EdgeInsets.only(top: 12.0),
-        child: Text(
-          title,
-          style: textStyleMedium.copyWith(
-            fontSize: 18,
-            color: ColorResources.blackColor,
-            fontWeight: FontWeight.bold,
-          ),
+      title: Text(
+        title,
+        style: textStyleMedium.copyWith(
+          fontSize: 18,
+          color: titleColors!=null ? Colors.blueGrey : Colors.black,
+          fontWeight: FontWeight.bold,
         ),
       ),
       titleAlignment: ListTileTitleAlignment.center,
-      trailing: trailing,
+      trailing: FaIcon(FontAwesomeIcons.angleRight, color: Colors.blueGrey),
+      // trailing: IconButton(
+      //   icon: FaIcon(FontAwesomeIcons.angleRight, color: Colors.blueGrey),
+      //   onPressed: () => onTap(),
+      // ),
       onTap: () => onPress(),
     );
   }
@@ -58,18 +62,18 @@ class CustomListWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
-        leading: Icon(iconleading, color: ColorResources.primaryColor,) ,
+        leading: Icon(iconleading, color: Colors.blueGrey,) ,
         title: Text(
           title,
           style: textStyleMedium.copyWith(
             fontSize: 18,
-            color: ColorResources.primaryColor,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
         titleAlignment: ListTileTitleAlignment.center,
         trailing: IconButton(
-          icon: Icon(Icons.edit , color: ColorResources.primaryColor, size: 30,),
+          icon: Icon(Icons.edit , color: Colors.blueGrey, size: 30,),
           color: ColorResources.primaryColor,
           onPressed: () => onPress(),
         ),

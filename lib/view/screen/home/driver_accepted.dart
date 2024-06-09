@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:scholarar/view/screen/home/waiting.dart';
 
 class DriverAccepted extends StatefulWidget {
   const DriverAccepted({super.key});

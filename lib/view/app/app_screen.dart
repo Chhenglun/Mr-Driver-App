@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:scholarar/controller/splash_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/view/screen/booking/open_booking.dart';
-import 'package:scholarar/view/screen/booking/tracking.dart';
 import 'package:scholarar/view/screen/chat/chat_screen.dart';
 import 'package:scholarar/view/screen/home/home_screen.dart';
 import 'package:scholarar/view/screen/profile/profile_screen.dart';
+import 'package:scholarar/view/screen/profile/setting_screen.dart';
 
 class AppScreen extends StatefulWidget {
   const AppScreen({super.key});
@@ -25,7 +25,7 @@ class _AppScreenState extends State<AppScreen> {
   final HomeScreen _homeScreen = HomeScreen();
   final OpenBooking _liveTracking = OpenBooking();
   final ChatScreen _chatScreen = ChatScreen();
-  final ProfileScreen _profileScreen = ProfileScreen();
+  final SettingScreen _settingScreen = SettingScreen();
   // final ScholarshipScreen _scholarshipScreen = ScholarshipScreen();
   // final CoursesScreen _coursesScreen = CoursesScreen();
   // final StoreScreen _storeScreen = StoreScreen();
@@ -36,7 +36,7 @@ class _AppScreenState extends State<AppScreen> {
       _homeScreen,
       _liveTracking,
       _chatScreen,
-      _profileScreen,
+      _settingScreen,
     ];
     super.initState();
   }

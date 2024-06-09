@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'package:get/get.dart';
-import 'package:scholarar/data/repository/home_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/repository/tracking_repository.dart';

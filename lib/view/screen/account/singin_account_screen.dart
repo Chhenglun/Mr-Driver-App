@@ -5,17 +5,16 @@ import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/account/signup_account_screen.dart';
 
-class SigninAccountScreen extends StatefulWidget {
-  const SigninAccountScreen({super.key});
+class SignInAccountScreen extends StatefulWidget {
+  const SignInAccountScreen({super.key});
 
   @override
-  State<SigninAccountScreen> createState() => _SigninAccountScreenState();
+  State<SignInAccountScreen> createState() => _SignInAccountScreenState();
 }
 
-class _SigninAccountScreenState extends State<SigninAccountScreen> {
+class _SignInAccountScreenState extends State<SignInAccountScreen> {
   AuthController authController = Get.find<AuthController>();
   final phoneNumberForcusNode = FocusNode();
   final passwordForcusNode = FocusNode();

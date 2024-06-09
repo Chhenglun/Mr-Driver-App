@@ -50,6 +50,33 @@ class AuthRepository {
       throw e.toString();
     }
   }
+  Future<Response> registerDriver (String firstName , String lastName ,String email , String password , String phonNumber , String gender , String dateOfBirth , bool availabilityStatus)
+  async{
+    Map<String, dynamic> body = {
+      'email' : email,
+      'password' : password,
+      'role' : 'driver',
+      'userType' : {
+        'firstName' : firstName,
+        'lastName' : lastName,
+        'phoneNumber' : phonNumber,
+        'gender' : gender,
+        'dateOfBirth' : dateOfBirth,
+        'availabilityStatus' : availabilityStatus,
+      }
+    };
+    try {
+      Response response = await dioClient.postData(
+        AppConstants.registerDriver, body,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      );
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 
   Future<Response> signInWithPhone(AuthModel authModel) async {
     try {

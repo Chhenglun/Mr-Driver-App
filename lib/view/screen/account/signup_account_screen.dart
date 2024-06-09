@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -7,9 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/util/style.dart';
 import 'package:scholarar/view/app/app_screen.dart';
-import 'package:scholarar/view/screen/home/home_screen.dart';
-import 'package:scholarar/view/screen/splash/splash_screen.dart';
 
 class SignUpAccountScreen extends StatefulWidget {
   const SignUpAccountScreen({super.key});
@@ -19,22 +19,33 @@ class SignUpAccountScreen extends StatefulWidget {
 }
 
 class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
-  final phoneNumberForcusNode = FocusNode();
-  final passwordForcusNode = FocusNode();
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  AuthController authController = Get.find<AuthController>();
+  final phoneNumberFocusNode = FocusNode();
+  final passwordFocusNode = FocusNode();
+  final emailFocusNode = FocusNode();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
+  bool isAgree = false;
   bool obscureText = true;
   final _form = GlobalKey<FormState>();
   var enterPassword = "";
   var enterPhone = "";
-  //Todo: Provinces
+  //validate email
+  bool isValidEmail(String email) {
+    final RegExp regex =
+    RegExp(r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+    return regex.hasMatch(email);
+  }
+
+  // Provinces
   String? selectedProvince;
   String? selectedDistrict;
   String? selectedCommune;
   String? selectedVillage;
-
-  //rep
 
   final List<String> _province = [
     'បន្ទាយមានជ័យ',
@@ -62,10 +73,12 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
     'តាកែវ',
     'ត្បូងឃ្មុំ',
   ];
-  //Gender
-  final List<String> _gender = ['ប្រុស', 'ស្រី'];
+
+  // Gender
+  final List<String> _gender = ['male', 'female', 'other'];
   String? _selectedGender;
-  //date
+
+  // Date
   void _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -78,14 +91,48 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
     }
   }
 
-  //Submit
-  Future<void> submit() async {
+  // Submit
+  void submit() {
     final isValid = _form.currentState!.validate();
-    if (isValid) {
-      _form.currentState!.save();
-      print(enterPhone);
-      print(enterPassword);
+    if (!isValid) {
+      return;
     }
+    if (isAgree == true) {
+      _form.currentState!.validate();
+      authController.registerDriverController(
+        context,
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        phoneNumber: _phoneController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+        gender: _selectedGender!,
+        dateOfBirth: _dateController.text,
+        availabilityStatus: isAgree,
+      );
+      //nextScreen(context, AppScreen());
+    } else {
+      Get.snackbar(
+        "Error!",
+        "",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: ColorResources.whiteColor,
+        snackStyle: SnackStyle.FLOATING,
+        colorText: ColorResources.primaryColor,
+        messageText: Text(
+          "Please agree to the terms and conditions",
+          style: textStyleLowMedium.copyWith(
+            color: ColorResources.redColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      );
+    }
+
   }
 
   @override
@@ -98,7 +145,6 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
     });
   }
 
-  //Todo: buildBody
   Widget _buildBody() {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
@@ -121,7 +167,6 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    //Todo: firsname
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,13 +179,12 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                         SizedBox(
                           height: 60,
                           child: TextFormField(
+                            controller: _firstNameController,
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (value) =>
-                                phoneNumberForcusNode.requestFocus(),
+                            onFieldSubmitted: (value) => phoneNumberFocusNode.requestFocus(),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.person),
-                              //labelText: 'First name',
                               hintText: 'បញ្ចូលនាមខ្លួនរបស់អ្នក',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -152,13 +196,11 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                               }
                               return null;
                             },
-                            onSaved: (newValue) => enterPhone = newValue!,
                           ),
                         ),
                       ],
                     ),
                     SizedBox(height: 16),
-                    //Todo: Lastname
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,13 +213,14 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                         SizedBox(
                           height: 60,
                           child: TextFormField(
+
+                            controller: _lastNameController,
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.next,
                             onFieldSubmitted: (value) =>
-                                phoneNumberForcusNode.requestFocus(),
+                                phoneNumberFocusNode.requestFocus(),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.person),
-                              // labelText: 'Last name',
                               hintText: 'បញ្ចូលគោត្តនាមរបស់អ្នក',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -189,15 +232,11 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                               }
                               return null;
                             },
-                            onSaved: (newValue) => enterPhone = newValue!,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    //Todo: Phone number
+                    SizedBox(height: 16),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,13 +249,13 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                         SizedBox(
                           height: 60,
                           child: TextFormField(
+                            controller: _phoneController,
                             keyboardType: TextInputType.phone,
                             textInputAction: TextInputAction.next,
                             onFieldSubmitted: (value) =>
-                                phoneNumberForcusNode.requestFocus(),
+                                phoneNumberFocusNode.requestFocus(),
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.phone),
-                              //labelText: 'Phone Number',
                               hintText: 'បញ្ចូលលេខទូរសព្ទរបស់អ្នក',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -224,7 +263,7 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.trim().length < 9) {
-                                return 'phone number muse be 9 character or long';
+                                return 'phone number must be 9 characters or longer';
                               }
                               return null;
                             },
@@ -234,36 +273,36 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                       ],
                     ),
                     SizedBox(height: 16),
-                    //Todo: gender
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "ភេទ",
-                          style: TextStyle(color: ColorResources.blackColor),
+                          style: TextStyle(color: Colors.black),
                         ),
-                        DropdownButtonFormField(
+                        DropdownButtonFormField<String>(
                           decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.wc),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              hintText: 'ជ្រើសរើសភេទ'),
+                            prefixIcon: Icon(Icons.wc),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            hintText: 'ជ្រើសរើសភេទ',
+                          ),
                           items: _gender.map((String gender) {
-                            return DropdownMenuItem(
+                            return DropdownMenuItem<String>(
                               value: gender,
                               child: Text(gender),
                             );
                           }).toList(),
-                          onChanged: (value) {
+                          onChanged: (String? value) {
                             setState(() {
                               _selectedGender = value!;
                             });
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please select your degree';
+                              return 'Please select your gender';
                             }
                             return null;
                           },
@@ -287,9 +326,7 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            // labelText: 'Date of Birth',
                             hintText: "ជ្រើសរើសថ្ងៃខែឆ្នាំកំណើត",
-                           // prefixIcon: Icon(Icons.l),
                             suffixIcon: IconButton(
                               icon: Icon(Icons.calendar_today),
                               onPressed: _pickDate,
@@ -303,143 +340,190 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 16),
-                        //Todo: password
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "ពាក្យសម្ងាត់",
-                              style:
-                                  TextStyle(color: ColorResources.blackColor),
-                            ),
-                            SizedBox(height: 8),
-                            SizedBox(
-                              height: 60,
-                              child: TextFormField(
-                                keyboardType: TextInputType.phone,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (value) =>
-                                    phoneNumberForcusNode.requestFocus(),
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.phone),
-                                  //labelText: 'Phone Number',
-                                  hintText: 'បញ្ចូលពាក្យសម្ងាត់',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null ||
-                                      value.trim().length < 9) {
-                                    return 'ពាក្យសម្ងាត់ត្រូវមានច្រើនជាង 9 តួអក្សរ';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (newValue) => enterPhone = newValue!,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "ពាក្យសម្ងាត់ម្តងទៀត",
-                              style:
-                                  TextStyle(color: ColorResources.blackColor),
-                            ),
-                            SizedBox(height: 8),
-                            SizedBox(
-                              height: 60,
-                              child: TextFormField(
-                                keyboardType: TextInputType.phone,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (value) =>
-                                    phoneNumberForcusNode.requestFocus(),
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.phone),
-                                  //labelText: 'Phone Number',
-                                  hintText: 'បញ្ចូលពាក្យសម្ងាត់ម្តងទៀត',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null ||
-                                      value.trim().length < 9) {
-                                    return 'ពាក្យសម្ងាត់ត្រូវមានច្រើនជាង 9 តួអក្សរ';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (newValue) => enterPhone = newValue!,
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
-                    //Todo: privine selecte in cambodia
                     SizedBox(height: 16),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "ភេទ",
+                          "អ៊ីម៉ែល",
                           style: TextStyle(color: ColorResources.blackColor),
                         ),
-                        DropdownButtonFormField(
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.wc),
+                        SizedBox(height: 8),
+                        SizedBox(
+                          height: 60,
+                          child: TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (value) =>
+                                phoneNumberFocusNode.requestFocus(),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.email),
+                              hintText: 'បញ្ចូលអ៊ីម៉ែលរបស់អ្នក',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              hintText: 'ជ្រើសរើសភេទ'),
-                          items: _gender.map((String gender) {
-                            return DropdownMenuItem(
-                              value: gender,
-                              child: Text(gender),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedGender = value!;
-                            });
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select your degree';
-                            }
-                            return null;
-                          },
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Please enter your email";
+                              } else if (!GetUtils.isEmail(value)) {
+                                return "Please enter valid email";
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) => enterPhone = newValue!,
+                          ),
                         ),
                       ],
                     ),
-
-                    SizedBox(height: 20),
-                    SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: TextButton(
-                          onPressed: () {
-                            nextScreenNoReturn(context, AppScreen());
-                            submit();
-                          },
-                          child: Text(
-                            'ចូលគណនី',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                    SizedBox(height: 16),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "ពាក្យសម្ងាត់",
+                          style: TextStyle(color: ColorResources.blackColor),
+                        ),
+                        SizedBox(height: 8),
+                        SizedBox(
+                          height: 60,
+                          child: TextFormField(
+                            controller: _passwordController,
+                            obscureText: obscureText,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (value) =>
+                                phoneNumberFocusNode.requestFocus(),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.lock),
+                              hintText: 'បញ្ចូលពាក្យសម្ងាត់',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  obscureText
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    obscureText = !obscureText;
+                                  });
+                                },
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.trim().length < 9) {
+                                return 'ពាក្យសម្ងាត់ត្រូវមានច្រើនជាង 9 តួអក្សរ';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) => enterPassword = newValue!,
                           ),
-                          style: TextButton.styleFrom(
-                            backgroundColor: ColorResources.primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: isAgree,
+                          onChanged: (value) {
+                            setState(() {
+                              isAgree = value!;
+                            });
+                          },
+                        ),
+                        Expanded(
+                          child: Text(
+                            'ខ្ញុំបាទបានអាននិងយល់ព្រមលើលក្ខខណ្ឌនិងលក្ខខណ្ឌសម្រាប់ប្រព័ន្ធរបស់ខ្ញុំ',
+                            style: TextStyle(
+                              color: ColorResources.blackColor,
+                              height: 1.5,
+                              fontSize: 16,
                             ),
                           ),
-                        )),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    // isAgree == false ? SizedBox(
+                    //   height: 50,
+                    //   width: double.infinity,
+                    //   child: TextButton(
+                    //     onPressed: () {
+                    //       //submit();
+                    //     },
+                    //     child: Text(
+                    //       'ចុះឈ្មោះ',
+                    //       style: TextStyle(color: Colors.white, fontSize: 20),
+                    //     ),
+                    //     style: TextButton.styleFrom(
+                    //       backgroundColor: ColorResources.greyColor,
+                    //       shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(8),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ) :
+                      SizedBox(
+                      height: 50,
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () {
+                          if (isAgree == true) {
+                            _form.currentState!.validate();
+                            authController.registerDriverController(
+                              context,
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              phoneNumber: _phoneController.text,
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                              gender: _selectedGender!,
+                              dateOfBirth: _dateController.text,
+                              availabilityStatus: isAgree,
+                            );
+                            //nextScreen(context, AppScreen());
+                          } else {
+                            Get.snackbar(
+                              "Error!",
+                              "",
+                              snackPosition: SnackPosition.TOP,
+                              backgroundColor: ColorResources.whiteColor,
+                              snackStyle: SnackStyle.FLOATING,
+                              colorText: ColorResources.primaryColor,
+                              messageText: Text(
+                                "Please agree to the terms and conditions",
+                                style: textStyleLowMedium.copyWith(
+                                  color: ColorResources.redColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                            );
+                          }
+                        },
+                        child: Text(
+                          'ចូលគណនី',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: ColorResources.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -462,5 +546,12 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<FocusNode>(
+        'passwordFocusNode', passwordFocusNode));
   }
 }

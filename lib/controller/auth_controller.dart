@@ -17,6 +17,7 @@ import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/login_screen.dart';
+import 'package:scholarar/view/screen/account/singin_account_screen.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +25,7 @@ class AuthController extends GetxController implements GetxService {
   final AuthRepository authRepository;
   late final SharedPreferences sharedPreferences;
   final TokenHelper _tokenHelper = TokenHelper();
+
   AuthController(
       {required this.authRepository, required this.sharedPreferences});
 
@@ -58,24 +60,39 @@ class AuthController extends GetxController implements GetxService {
 
   // get new
   bool get isFirstName => _isFirstName;
+
   bool get isLastName => _isLastName;
+
   bool get isGender => _isGender;
+
   bool get isPhoneNumber => _isPhoneNumber;
+
   bool get isEmail => _isEmail;
+
   bool get isPassword => _isPassword;
+
   bool get isConfirmPassword => _isConfirmPassword;
+
   bool get isAgree => _isAgree;
   Map<String, dynamic>? _userInfoMap;
 
   //get
   bool get isLoading => _isLoading;
+
   bool get isTypingCompleted => _isTypingCompleted;
+
   bool get userName => _userName;
+
   List? get subscriptionList => _subscriptionList;
+
   Map<String, dynamic>? get userInfoMap => _userInfoMap;
+
   bool get isEnableVerificationCode => _isEnableVerificationCode;
+
   String get verificationCode => _verificationCode;
+
   PickedFile? get pickedImage => _pickedImage;
+
   File? get file => _file;
 
   final hidePassword = true.obs;
@@ -303,8 +320,8 @@ class AuthController extends GetxController implements GetxService {
         try {
           token = map["token"];
           String role = map["role"];
-          if (role == "admin") {
-            print("Admin");
+          if (role == "driver") {
+            print("${map["role"]} : Driver");
           } else {
             print("User");
           }
@@ -389,6 +406,88 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
+  //RegisterDriverController
+  Future registerDriverController(
+    BuildContext context, {
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String password,
+    required String phoneNumber,
+    required String gender,
+    required String dateOfBirth,
+    required bool availabilityStatus,
+  }) async {
+    try {
+      _isLoading = true;
+      update();
+
+      Response apiResponse = await authRepository.registerDriver(
+        firstName,
+        lastName,
+        email,
+        password,
+        phoneNumber,
+        gender,
+        dateOfBirth,
+        availabilityStatus,
+      );
+      if (apiResponse.body['status'] == 201) {
+        print("status  : ${apiResponse.body['status']}");
+        print("Register Success : ${apiResponse.body['status_code']}");
+        Map<String, dynamic> map = apiResponse.body;
+        // String message = map["status_code"];
+        // String token = map["token"];
+        String message  = "";
+        try {
+          message = map["status_code"];
+          print("Message : $message");
+        } catch (e) {
+          print(e.toString());
+        }
+        try {
+          token = map["token"];
+        } catch (e) {
+          print(e.toString());
+        }
+        if (token != null && token.isNotEmpty) {
+          _tokenHelper.saveToken(token: token);
+        }
+        customShowSnackBar('successfulCreateAccount'.tr, Get.context!,
+            isError: false);
+        await _tokenHelper.saveToken(token: token).then((_) async {
+          nextScreenNoReturn(Get.context!, AppScreen());
+        });
+        // if (token.isNotEmpty) {
+        //   await _tokenHelper.saveToken(token: token);
+        // }
+        //
+        // customShowSnackBar('successfulCreateAccount'.tr, context,
+        //     isError: false);
+        //
+        // await _tokenHelper.saveToken(token: token).then((_) async {
+        //   nextScreenNoReturn(context, AppScreen());
+        // });
+      } else {
+        customShowSnackBar('thePhoneHasAlreadyBeenTaken'.tr, Get.context!,
+            isError: true);
+        if (apiResponse.hasError is String) {
+          _isLoading = false;
+          update();
+        } else {
+          _isLoading = false;
+          update();
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+      customShowSnackBar('An error occurred. Please try again.', context,
+          isError: true);
+    }
+    _isLoading = false;
+    update();
+  }
+
   // Todo: signOut
   Future signOut(context) async {
     try {
@@ -399,7 +498,7 @@ class AuthController extends GetxController implements GetxService {
         update();
         print("Sign Out");
         print("User Info : $_userInfoMap");
-        nextScreenNoReturn(context, SplashScreen());
+        nextScreenNoReturn(context, SignInAccountScreen());
       });
       _isLoading = false;
       update();

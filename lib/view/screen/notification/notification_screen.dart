@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/util/color_resources.dart';
@@ -143,7 +141,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       SizedBox(width: 8,),
                                       GestureDetector(
                                         onTap: (){
-                                          print("OnTap");
+                                          //print("OnTap");
                                         },
                                         child: Container(
                                           height: 40,

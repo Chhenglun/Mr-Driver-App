@@ -2,10 +2,8 @@
 
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
@@ -237,7 +235,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     textInputAction: TextInputAction.next,
                                     controller: _confirmPasswordCtrl,
                                     validator: (value) {
-                                      if (value!.isEmpty) {
+                                      if (value.isEmpty) {
                                         return "Please enter your password";
                                       } else if (value.length < 6) {
                                         return "Password must be at least 6 characters";

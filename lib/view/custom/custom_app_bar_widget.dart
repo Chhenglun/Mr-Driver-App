@@ -3,10 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/util/style.dart';
-import 'package:scholarar/view/screen/notification/notification_screen.dart';
-import 'package:scholarar/view/screen/search/search_screen.dart';
 
 class CustomAppbarWidget {
   // Todo: buildButtonClick

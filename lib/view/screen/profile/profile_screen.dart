@@ -33,6 +33,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: ColorResources.whiteBackgroundColor,
+          ),
+        ),
+        title: Text(
+          'ព័ត៌មានផ្ទាល់ខ្លួន',
+          style: GoogleFonts.notoSerifKhmer(
+            fontSize: 20,
+            color: ColorResources.whiteBackgroundColor,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: ColorResources.primaryColor.withOpacity(0.8),
+      ),
       //backgroundColor: ColorResources.primaryColor,
       body: _buildBody(),
     );
@@ -52,8 +73,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
+                        ColorResources.primaryColor.withOpacity(0.8),
                         ColorResources.whiteBackgroundColor,
-                        ColorResources.primaryColor,
+
                       ],
                     ),
                     color: ColorResources.primaryColor,
@@ -65,8 +87,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      ColorResources.primaryColor,
                       ColorResources.whiteBackgroundColor,
+                      ColorResources.primaryColor.withOpacity(0.2),
                     ],
                   ),
                   color: ColorResources.whiteBackgroundColor,
@@ -88,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         width: Get.width * 0.9,
         //height: Get.height,
         decoration: BoxDecoration(
-          color: ColorResources.whiteBackgroundColor,
+          //color: ColorResources.whiteBackgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -214,9 +236,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 iconleading: Icons.location_on,
                 onPress: () {},
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 32),
              Container(
-              height: 40,
+              height: 60,
               width: Get.width * 0.8,
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: ElevatedButton(
@@ -225,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     'កែប្រែព័ត៌មានផ្ទាល់ខ្លួន',
                     style: TextStyle(
                       color: ColorResources.redColor,
-                      fontSize: 16,
+                      fontSize: 22,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(

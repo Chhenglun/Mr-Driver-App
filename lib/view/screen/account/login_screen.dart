@@ -23,7 +23,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   //Todo : Properties
   AuthController authController = Get.find<AuthController>();
-  final TextEditingController _phoneCtrl = TextEditingController();
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
   File? _fileImage;

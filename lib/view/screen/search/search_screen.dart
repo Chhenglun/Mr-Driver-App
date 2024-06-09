@@ -57,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 prefixIcon: IconButton(
                   onPressed: (){
-                    print(_textController.text);
+                    //print(_textController.text);
                   },
                   icon:Icon(Icons.search, color: Colors.white, size: 25),
                 ),
