@@ -39,6 +39,7 @@ class AuthController extends GetxController implements GetxService {
   int? pushChannel;
 
   //set newb
+
   bool _isFirstName = false;
   bool _isLastName = false;
   bool _isGender = false;
@@ -76,7 +77,11 @@ class AuthController extends GetxController implements GetxService {
   bool get isAgree => _isAgree;
   Map<String, dynamic>? _userInfoMap;
 
+  Map<String, dynamic>? _userDriverMap;
+
   //get
+  Map<String , dynamic>? get userDriverMap => _userDriverMap;
+
   bool get isLoading => _isLoading;
 
   bool get isTypingCompleted => _isTypingCompleted;
@@ -144,7 +149,6 @@ class AuthController extends GetxController implements GetxService {
     const storage = FlutterSecureStorage();
     storage.write(key: "token", value: token);
   }
-
   Future<String> getCache() async {
     const storage = FlutterSecureStorage();
     String? content = await storage.read(key: "token");
@@ -350,6 +354,31 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+  //Todo: GetDriverProfile
+  Future getDriverProfileController() async {
+    try {
+      _isLoading = true;
+      update();
+      Response response = await authRepository.getDriverProfileRepo();
+      print('lun lun');
+      print(response);
+      if (response.statusCode == 200) {
+        print("getDriverProfile");
+        print(response.body);
+        _userDriverMap = response.body;
+        print("User Driver Map : $_userDriverMap");
+        _isLoading = false;
+        update();
+      } else {
+        print("getDriverProfileError");
+        _isLoading = false;
+        update();
+      }
+    } catch (e) {
+      print("getDriverProfileCatch");
+      throw e.toString();
+    }
+  }
 
   // Todo: RegisterController
   Future registerController(BuildContext context,
@@ -416,7 +445,6 @@ class AuthController extends GetxController implements GetxService {
     required String phoneNumber,
     required String gender,
     required String dateOfBirth,
-    required bool availabilityStatus,
   }) async {
     try {
       _isLoading = true;
@@ -430,7 +458,6 @@ class AuthController extends GetxController implements GetxService {
         phoneNumber,
         gender,
         dateOfBirth,
-        availabilityStatus,
       );
       if (apiResponse.body['status'] == 201) {
         print("status  : ${apiResponse.body['status']}");
@@ -510,28 +537,28 @@ class AuthController extends GetxController implements GetxService {
   }
 
   // Todo: getUserInfo
-  Future getUserInfo() async {
-    try {
-      _isLoading = true;
-      Response apiResponse = await authRepository.getUserInfo();
-      if (apiResponse.body['status'] == "success") {
-        _userInfoMap = apiResponse.body['data'];
-        print("User Info : $_userInfoMap");
-        _isLoading = false;
-        update();
-      } else {
-        _userInfoMap = null;
-        _isLoading = false;
-        update();
-      }
-      _isLoading = false;
-      update();
-    } catch (e) {
-      print(e.toString());
-      _isLoading = false;
-      update();
-    }
-  }
+  // Future getUserInfo() async {
+  //   try {
+  //     _isLoading = true;
+  //     Response apiResponse = await authRepository.getUserInfo();
+  //     if (apiResponse.body['status'] == "success") {
+  //       _userInfoMap = apiResponse.body['data'];
+  //       print("User Info : $_userInfoMap");
+  //       _isLoading = false;
+  //       update();
+  //     } else {
+  //       _userInfoMap = null;
+  //       _isLoading = false;
+  //       update();
+  //     }
+  //     _isLoading = false;
+  //     update();
+  //   } catch (e) {
+  //     print(e.toString());
+  //     _isLoading = false;
+  //     update();
+  //   }
+  // }
 
   //Todo: getSubscriptionList
   Future getSubscriptionList() async {

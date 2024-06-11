@@ -108,7 +108,6 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
         password: _passwordController.text,
         gender: _selectedGender!,
         dateOfBirth: _dateController.text,
-        availabilityStatus: isAgree,
       );
       //nextScreen(context, AppScreen());
     } else {
@@ -487,7 +486,6 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                               password: _passwordController.text,
                               gender: _selectedGender!,
                               dateOfBirth: _dateController.text,
-                              availabilityStatus: isAgree,
                             );
                             //nextScreen(context, AppScreen());
                           } else {

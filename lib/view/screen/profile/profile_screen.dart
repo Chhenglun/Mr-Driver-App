@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
+import 'package:intl/intl.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -21,6 +23,19 @@ String urlImagProfile =
     'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  AuthController authController = Get.find<AuthController>();
+  bool isLoading = true;
+  init() async {
+    await authController.getDriverProfileController();
+    setState(() {
+      isLoading = false;
+    });
+  }
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   Future<void> pickImage(ImageSource source) async {
@@ -30,33 +45,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+
+  String formatDateOfBirth(String dateOfBirth) {
+    // Parse the date of birth into a DateTime object
+    DateTime dob = DateTime.parse(dateOfBirth);
+
+    // Create a DateFormat for the desired format
+    DateFormat formatter = DateFormat('dd-MM-yyyy');
+
+    // Format the date of birth
+    String formattedDob = formatter.format(dob);
+
+    return formattedDob;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return GetBuilder<AuthController>(
+      builder: (authController) {
+        return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: ColorResources.whiteBackgroundColor,
+            ),
+          ),
+          title: Text(
+            'ព័ត៌មានផ្ទាល់ខ្លួន',
+            style: GoogleFonts.notoSerifKhmer(
+              fontSize: 20,
+              color: ColorResources.whiteBackgroundColor,
+            ),
+          ),
+          centerTitle: true,
+          backgroundColor: ColorResources.primaryColor.withOpacity(0.8),
+        ),
+        //backgroundColor: ColorResources.primaryColor,
+        body: _buildBody(),
 
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorResources.whiteBackgroundColor,
-          ),
-        ),
-        title: Text(
-          'ព័ត៌មានផ្ទាល់ខ្លួន',
-          style: GoogleFonts.notoSerifKhmer(
-            fontSize: 20,
-            color: ColorResources.whiteBackgroundColor,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: ColorResources.primaryColor.withOpacity(0.8),
-      ),
-      //backgroundColor: ColorResources.primaryColor,
-      body: _buildBody(),
+
     );
+      },
+    );
+
   }
 
   Widget _buildBody() {
@@ -93,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   color: ColorResources.whiteBackgroundColor,
                 ),
-              ),
+              )
             ],
           ),
           Positioned(top: 40, left: 10, right: 10, child: _buildProfile()),
@@ -102,8 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ));
   }
 
-  //Todo : _buildProfile
-  Widget _buildProfile() {
+  Widget  _buildProfile() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -202,19 +236,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(height: 32),
               //Todo: ListTile of Profile
               CustomListWidget.customListTile(
-                title: 'ឈ្មោះ',
+                title:  authController.userDriverMap?['first_name'],
+                iconleading: Icons.person,
+                onPress: () {},
+              ),
+              SizedBox(height: 16),
+              CustomListWidget.customListTile(
+                title:  authController.userDriverMap?['last_name'],
                 iconleading: Icons.person,
                 onPress: () {},
               ),
               SizedBox(height: 16),
               CustomListWidget.customListTile(
                 iconleading: Icons.email,
-                title: 'អ៊ីម៉ែល',
+                title: authController.userDriverMap?['gmail']?? "Email",
                 onPress: () {},
               ),
               SizedBox(height: 16),
               CustomListWidget.customListTile(
-                title: 'លេខទូរស័ព្ទ',
+                title: authController.userDriverMap?['phone_number']?? "Phone",
                 iconleading: Icons.phone,
                 onPress: () {},
               ),
@@ -226,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               SizedBox(height: 16),
               CustomListWidget.customListTile(
-                title: 'ភេទ',
+                title: formatDateOfBirth(authController.userDriverMap?['date_of_birth']?? "Date of Birth"),
                 iconleading: Icons.wc,
                 onPress: () {},
               ),

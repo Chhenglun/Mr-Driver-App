@@ -12,6 +12,8 @@ class AppConstants {
   static const String baseURL = "http://ec2-54-82-25-173.compute-1.amazonaws.com:8000";
   static const String loginUrlNew = "/api/users/login";
   static const String registerDriver = "/api/users/register";
+  static const String getDriverProfile = "/api/users/profile";
+  //old project
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";
   static const String register = "/api/v1/register";
@@ -39,7 +41,7 @@ class AppConstants {
   static const String verificationCode = "";
   static const String phoneSignUP = "";
   static const String signOut = "";
-  static const String getUserInfo = "/api/v1/user/profile";
+ // static const String getUserInfo = "/api/v1/user/profile";
   static const String changeUserName = "";
   static const String changeAvatar = "";
   static const String resetPassword = "";

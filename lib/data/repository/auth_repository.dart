@@ -50,20 +50,17 @@ class AuthRepository {
       throw e.toString();
     }
   }
-  Future<Response> registerDriver (String firstName , String lastName ,String email , String password , String phonNumber , String gender , String dateOfBirth , bool availabilityStatus)
+  Future<Response> registerDriver (String firstName , String lastName ,String email , String password , String phoneNumber , String gender , String dateOfBirth)
   async{
     Map<String, dynamic> body = {
-      'email' : email,
-      'password' : password,
-      'role' : 'driver',
-      'userType' : {
-        'firstName' : firstName,
-        'lastName' : lastName,
-        'phoneNumber' : phonNumber,
-        'gender' : gender,
-        'dateOfBirth' : dateOfBirth,
-        'availabilityStatus' : availabilityStatus,
-      }
+      "role": "driver",
+      "first_name": firstName,
+      "last_name": lastName,
+      "gender": gender,
+      "phone_number": phoneNumber,
+      "date_of_birth": dateOfBirth,
+      "email": email,
+      "password": password,
     };
     try {
       Response response = await dioClient.postData(
@@ -73,6 +70,21 @@ class AuthRepository {
         }
       );
       return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+  //get driver profile
+  Future<Response> getDriverProfileRepo() async {
+    try {
+      String? token = sharedPreferences.getString(AppConstants.token);
+      if (token == null) {
+        throw Exception("Token is null. User might not be logged in.");
+      }
+      dioClient.updateHeader(oldToken: token);
+      final response = await dioClient.getData(AppConstants.getDriverProfile);
+      return response;
+
     } catch (e) {
       throw e.toString();
     }
@@ -148,16 +160,16 @@ class AuthRepository {
     }
   }
 
-  Future<Response> getUserInfo() async {
-    try {
-      String token = sharedPreferences.getString(AppConstants.token)!;
-      dioClient.updateHeader(oldToken: token);
-      final response = await dioClient.getData(AppConstants.getUserInfo);
-      return response;
-    } catch (e) {
-      throw e.toString();
-    }
-  }
+  // Future<Response> getUserInfo() async {
+  //   try {
+  //     String token = sharedPreferences.getString(AppConstants.token)!;
+  //     dioClient.updateHeader(oldToken: token);
+  //     final response = await dioClient.getData(AppConstants.getUserInfo);
+  //     return response;
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
 
   Future<Response> getSubscription() async {
     try {

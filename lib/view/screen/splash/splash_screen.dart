@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
         String token = sharedPreferences!.getString(AppConstants.token)!;
         if (token.isNotEmpty) {
           print("First Check Token $token");
-          await authController.getUserInfo().then((_) {
+          await authController.getDriverProfileController().then((_) {
             nextScreenReplace(Get.context, AppScreen());
           });
         } else {
