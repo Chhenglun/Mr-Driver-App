@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
@@ -12,6 +11,8 @@ import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
 import 'package:scholarar/view/screen/account/singin_account_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../booking/open_booking.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -34,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
         if (token.isNotEmpty) {
           print("First Check Token $token");
           await authController.getDriverProfileController().then((_) {
-            nextScreenReplace(Get.context, AppScreen());
+            nextScreenReplace(Get.context, OpenBooking());
           });
         } else {
           print("Logout Token: ");

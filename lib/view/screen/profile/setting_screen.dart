@@ -51,7 +51,9 @@ class _SettingScreenState extends State<SettingScreen> {
       child: Stack(
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               Container(
                   height: Get.height * 0.4,
                   decoration: BoxDecoration(

@@ -158,92 +158,125 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
               },
             ),
-            Visibility(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                      height: MediaQuery.sizeOf(context).height * 3 / 8,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(topLeft:Radius.circular(20), topRight: Radius.circular(20))
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width/2.5,
+                  margin: EdgeInsets.symmetric(horizontal: 20,vertical: 40),
+                  alignment: Alignment.topLeft,
+                  child: ElevatedButton(
+                      style: const ButtonStyle(
+                        backgroundColor:
+                        MaterialStatePropertyAll(Colors.red),
                       ),
-                      child: Column(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'ត្រឡប់ក្រោយ',
+                            style: TextStyle(color: Colors.white),
+                          )
+                        ],
+                      )),
+                ),
+                Spacer(),
+                Visibility(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                          height: MediaQuery.sizeOf(context).height * 3 / 8,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(topLeft:Radius.circular(20), topRight: Radius.circular(20))
+                          ),
+                          child: Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10, bottom: 5, left: 20),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text('120វិនាទី',style: TextStyle(color: Colors.red,fontSize: 12),),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[300]),
-                                    onPressed: (){}, child: Padding(
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10, bottom: 5, left: 20),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text('120វិនាទី',style: TextStyle(color: Colors.red,fontSize: 12),),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
+                                    child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[300]),
+                                        onPressed: (){}, child: Padding(
                                       padding: EdgeInsets.symmetric(vertical: 15,horizontal: 50),
                                       child: Text("12000រៀល",style: TextStyle(color: Colors.black,fontSize: 20),),
                                     )),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 20,),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Row(
+                                  children: [
+                                    Icon(CupertinoIcons.location_fill,color: Colors.blue,),
+                                    SizedBox(width: 20,),
+                                    Text("ចម្ងាយ 200m ពីភ្ញៀវ",style: TextStyle(color: Colors.blue),)
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 20,),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Row(
+                                  children: [
+                                    Icon(CupertinoIcons.map_pin_ellipse,color: Colors.black,),
+                                    SizedBox(width: 20,),
+                                    Text("St528",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),)
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 20,),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Row(
+                                  children: [
+                                    Icon(CupertinoIcons.stop_circle_fill,color: Colors.red,),
+                                    SizedBox(width: 20,),
+                                    Text("Fun mall",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),)
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 20,),
+                              Container(
+                                margin: EdgeInsets.symmetric(horizontal: 20),
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green[500]),
+                                    onPressed: () {
+                                      nextScreen(context, ArriveScreen());
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.symmetric(vertical: 16,),
+                                      child: Text("ទទួលការកក់",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
+                                    )
+                                ),
                               )
                             ],
-                          ),
-                          SizedBox(height: 20,),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              children: [
-                                Icon(CupertinoIcons.location_fill,color: Colors.blue,),
-                                SizedBox(width: 20,),
-                                Text("ចម្ងាយ 200m ពីភ្ញៀវ",style: TextStyle(color: Colors.blue),)
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20,),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              children: [
-                                Icon(CupertinoIcons.map_pin_ellipse,color: Colors.black,),
-                                SizedBox(width: 20,),
-                                Text("St528",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),)
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20,),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              children: [
-                                Icon(CupertinoIcons.stop_circle_fill,color: Colors.red,),
-                                SizedBox(width: 20,),
-                                Text("Fun mall",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),)
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20,),
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 20),
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(backgroundColor: Colors.green[500]),
-                                onPressed: () {
-                                  nextScreen(context, ArriveScreen());
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.symmetric(vertical: 16,),
-                                  child: Text("ទទួលការកក់",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
-                                )
-                            ),
                           )
-                        ],
-                      )
-                  ),
-                )
+                      ),
+                    )
+                ),
+              ],
             ),
           ]
       ),
