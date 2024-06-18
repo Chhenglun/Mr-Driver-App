@@ -41,6 +41,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => CourseRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
 
+
   // Controller
   Get.lazyPut(() => SplashController());
   Get.lazyPut(() => LocalizationController(sharedPreferences: Get.find(), dioClient: Get.find()));

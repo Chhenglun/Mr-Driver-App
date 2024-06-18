@@ -50,17 +50,31 @@ class AuthRepository {
       throw e.toString();
     }
   }
-  Future<Response> registerDriver (String firstName , String lastName ,String email , String password , String phoneNumber , String gender , String dateOfBirth)
+  Future<Response> registerDriver (
+      String firstName , String lastName ,String email ,
+      String password , String phoneNumber ,
+      String gender , String dateOfBirth,
+      String iDCard , String driving,
+      String drivingLicense, String nationality,
+      String province, String district,
+      String commune, String village
+      )
   async{
     Map<String, dynamic> body = {
-      "role": "driver",
       "first_name": firstName,
       "last_name": lastName,
-      "gender": gender,
-      "phone_number": phoneNumber,
-      "date_of_birth": dateOfBirth,
       "email": email,
       "password": password,
+      "phone_number": phoneNumber,
+      "date_of_birth": dateOfBirth,
+      "gender": gender,
+      "id_card": iDCard,
+      "driving_license": drivingLicense,
+      "nationality": nationality,
+      "province": province,
+      "district": district,
+      "commune": commune,
+      "village": village,
     };
     try {
       Response response = await dioClient.postData(
@@ -120,6 +134,7 @@ class AuthRepository {
       throw e.toString();
     }
   }
+  //Todo: LoginDriver
   Future<Response> loginWithEmailNew(String email , String password, BuildContext context) async {
     try {
       Response response = await dioClient.postData(AppConstants.loginUrlNew, {
@@ -130,7 +145,15 @@ class AuthRepository {
     } catch (e) {
       throw e.toString();
     }
-
+  }
+  //Todo: trakinRepo
+  Future<Response> getTrackingRepo() async {
+    try {
+      final response = await dioClient.getData(AppConstants.statTrip);
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
   }
 
   Future<Response> changeAvatar(String uuid) async {

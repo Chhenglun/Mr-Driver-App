@@ -11,8 +11,9 @@ class AppConstants {
   static const String appName = "Authenticator";
   static const String baseURL = "http://ec2-54-82-25-173.compute-1.amazonaws.com:8000";
   static const String loginUrlNew = "/api/users/login";
-  static const String registerDriver = "/api/users/register";
+  static const String registerDriver = "/api/users/register-driver";
   static const String getDriverProfile = "/api/users/profile";
+  static const String statTrip = "/api/trips/start";
   //old project
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";

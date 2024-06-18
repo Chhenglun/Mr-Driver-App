@@ -18,5 +18,6 @@ class ColorResources {
   static Color whiteColor = Colors.white;
   static Color transparentColor = Colors.transparent;
   static Color primaryColor = Color.fromRGBO(232,90,91, 1);
+  //static Color primaryColor = Color(0xffFFA438);
   static Color secondaryColor = Colors.white;
 }

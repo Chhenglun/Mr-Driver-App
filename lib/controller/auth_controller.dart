@@ -77,10 +77,11 @@ class AuthController extends GetxController implements GetxService {
   bool get isAgree => _isAgree;
   Map<String, dynamic>? _userInfoMap;
 
+//set driver
   Map<String, dynamic>? _userDriverMap;
 
   //get
-  Map<String , dynamic>? get userDriverMap => _userDriverMap;
+  Map<String, dynamic>? get userDriverMap => _userDriverMap;
 
   bool get isLoading => _isLoading;
 
@@ -149,6 +150,7 @@ class AuthController extends GetxController implements GetxService {
     const storage = FlutterSecureStorage();
     storage.write(key: "token", value: token);
   }
+
   Future<String> getCache() async {
     const storage = FlutterSecureStorage();
     String? content = await storage.read(key: "token");
@@ -319,7 +321,6 @@ class AuthController extends GetxController implements GetxService {
       if (apiResponse.statusCode == 200) {
         Navigator.pop(Get.context!);
         Map<String, dynamic> map = apiResponse.body;
-        print("LoginWithEmailNew : ${apiResponse.body['message']}");
 
         try {
           token = map["token"];
@@ -354,14 +355,13 @@ class AuthController extends GetxController implements GetxService {
       update();
     }
   }
+
   //Todo: GetDriverProfile
   Future getDriverProfileController() async {
     try {
       _isLoading = true;
       update();
       Response response = await authRepository.getDriverProfileRepo();
-      print('lun lun');
-      print(response);
       if (response.statusCode == 200) {
         print("getDriverProfile");
         print(response.body);
@@ -445,6 +445,14 @@ class AuthController extends GetxController implements GetxService {
     required String phoneNumber,
     required String gender,
     required String dateOfBirth,
+    required String iDCard,
+    required String driving,
+    required String drivingLicense,
+    required String nationality,
+    required String province,
+    required String district,
+    required String commune,
+    required String village,
   }) async {
     try {
       _isLoading = true;
@@ -458,6 +466,14 @@ class AuthController extends GetxController implements GetxService {
         phoneNumber,
         gender,
         dateOfBirth,
+        iDCard,
+        driving,
+        drivingLicense,
+        nationality,
+        province,
+        district,
+        commune,
+        village,
       );
       if (apiResponse.body['status'] == 201) {
         print("status  : ${apiResponse.body['status']}");
@@ -465,7 +481,7 @@ class AuthController extends GetxController implements GetxService {
         Map<String, dynamic> map = apiResponse.body;
         // String message = map["status_code"];
         // String token = map["token"];
-        String message  = "";
+        String message = "";
         try {
           message = map["status_code"];
           print("Message : $message");
@@ -485,16 +501,6 @@ class AuthController extends GetxController implements GetxService {
         await _tokenHelper.saveToken(token: token).then((_) async {
           nextScreenNoReturn(Get.context!, AppScreen());
         });
-        // if (token.isNotEmpty) {
-        //   await _tokenHelper.saveToken(token: token);
-        // }
-        //
-        // customShowSnackBar('successfulCreateAccount'.tr, context,
-        //     isError: false);
-        //
-        // await _tokenHelper.saveToken(token: token).then((_) async {
-        //   nextScreenNoReturn(context, AppScreen());
-        // });
       } else {
         customShowSnackBar('thePhoneHasAlreadyBeenTaken'.tr, Get.context!,
             isError: true);

@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors, sized_box_for_whitespace, sort_child_properties_last
 
+import 'dart:ffi';
+
+import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,9 +10,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/util/style.dart';
-import 'package:scholarar/view/app/app_screen.dart';
 
 class SignUpAccountScreen extends StatefulWidget {
   const SignUpAccountScreen({super.key});
@@ -40,39 +41,11 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
     RegExp(r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
     return regex.hasMatch(email);
   }
-
-  // Provinces
-  String? selectedProvince;
-  String? selectedDistrict;
-  String? selectedCommune;
-  String? selectedVillage;
-
-  final List<String> _province = [
-    'បន្ទាយមានជ័យ',
-    'បាត់ដំបង',
-    'កំពង់ចាម',
-    'កំពង់ឆ្នាំង',
-    'កំពង់ស្ពឺ',
-    'កំពង់ធំ',
-    'កំពត',
-    'កណ្តាល',
-    'កែប',
-    'កោះកុង',
-    'ក្រចេះ',
-    'មណ្ឌលគិរី',
-    'ឧត្តរមានជ័យ',
-    'បៃលិន',
-    'ភ្នំពេញ',
-    'ព្រះសីហនុ',
-    'ព្រះវិហារ',
-    'ពោធិ៍សាត់',
-    'រតនគិរី',
-    'សៀមរាប',
-    'ស្ទឹងត្រែង',
-    'ស្វាយរៀង',
-    'តាកែវ',
-    'ត្បូងឃ្មុំ',
-  ];
+  String? country;
+  String? province;
+  String? district;
+  String? commune;
+  String? village;
 
   // Gender
   final List<String> _gender = ['male', 'female', 'other'];
@@ -108,6 +81,14 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
         password: _passwordController.text,
         gender: _selectedGender!,
         dateOfBirth: _dateController.text,
+        nationality: country!,
+        province: province!,
+        district: district!,
+        commune: commune!,
+        village: village!,
+        drivingLicense: "123456",
+        iDCard: "123456",
+        driving: "123456",
       );
       //nextScreen(context, AppScreen());
     } else {
@@ -428,6 +409,62 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                       ],
                     ),
                     SizedBox(height: 16),
+                    // CSC Picker for Cambodia
+                    //write me CSC Picker to selecte province, district, commune, village
+                    CSCPicker(
+                      showCities: true,
+                      showStates: true,
+                      //showZipCode: true,
+                      defaultCountry: CscCountry.Cambodia,
+                      flagState: CountryFlag.ENABLE,
+                      cityDropdownLabel: "ស្រុក",
+                      stateDropdownLabel: "ខេត្ត",
+                      countryDropdownLabel: "ប្រទេស",
+                      citySearchPlaceholder: "ស្វែងរកស្រុក",
+                      stateSearchPlaceholder: "ស្វែងរកខេត្ត",
+                      countrySearchPlaceholder: "ស្វែងរកប្រទេស",
+
+                      dropdownDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Colors.white,
+                        border: Border.all(color: Colors.grey.shade300, width: 1),
+                      ),
+                      disabledDropdownDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Colors.grey.shade300,
+                        border: Border.all(color: Colors.grey.shade300, width: 1),
+                      ),
+                      selectedItemStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                      ),
+                      dropdownHeadingStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                      ),
+                      dropdownItemStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                      ),
+                      dropdownDialogRadius: 10.0,
+                      searchBarRadius: 10.0,
+                      onCountryChanged: (value) {
+                        setState(() {
+                          country = value;
+                        });
+                      },
+                      onStateChanged: (value) {
+                        setState(() {
+                          province = value;
+                        });
+                      },
+                      onCityChanged: (value) {
+                        setState(() {
+                          district = value;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 16),
                     Row(
                       children: [
                         Checkbox(
@@ -451,25 +488,6 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                       ],
                     ),
                     SizedBox(height: 20),
-                    // isAgree == false ? SizedBox(
-                    //   height: 50,
-                    //   width: double.infinity,
-                    //   child: TextButton(
-                    //     onPressed: () {
-                    //       //submit();
-                    //     },
-                    //     child: Text(
-                    //       'ចុះឈ្មោះ',
-                    //       style: TextStyle(color: Colors.white, fontSize: 20),
-                    //     ),
-                    //     style: TextButton.styleFrom(
-                    //       backgroundColor: ColorResources.greyColor,
-                    //       shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(8),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ) :
                       SizedBox(
                       height: 50,
                       width: double.infinity,
@@ -486,6 +504,15 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                               password: _passwordController.text,
                               gender: _selectedGender!,
                               dateOfBirth: _dateController.text,
+                              nationality: country!,
+                              province: province!,
+                              district: district!,
+                              commune: commune!,
+                              village: village!,
+                              drivingLicense: "123456",
+                              iDCard: "123456",
+                              driving: "123456",
+
                             );
                             //nextScreen(context, AppScreen());
                           } else {
@@ -511,7 +538,7 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                           }
                         },
                         child: Text(
-                          'ចូលគណនី',
+                          'បង្កើតគណនី',
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                         style: TextButton.styleFrom(

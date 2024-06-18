@@ -65,6 +65,7 @@ dependencies:
   firebase_core: ^2.3.0
   firebase_messaging: ^14.1.0
   awesome_notifications: ^0.9.3+1
+  csc_picker: ^0.2.7
 
 dependency_overrides:
   modal_bottom_sheet:
@@ -92,7 +93,7 @@ flutter:
   fonts:
     - family: Inter
       fonts:
-        - asset: assets/fonts/ArimaKoshi-Regular.otf
+        - asset: assets/fonts/Inter-Regular.ttf
           weight: 400
 
 

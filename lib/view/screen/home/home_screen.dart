@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/util/style.dart';
 import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
@@ -20,11 +22,15 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: false,
         title: TypewriterAnimatedTextKit(
           text: ['Mr Passenger CAM'],
-          textStyle: TextStyle(
-            color: Colors.red,
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
+          textStyle: textStyleMedium.copyWith(
+            fontSize: 20,
+            color: ColorResources.primaryColor,
           ),
+          // textStyle: TextStyle(
+          //   color: ColorResources.primaryColor,
+          //   fontSize: 20.0,
+          //   fontWeight: FontWeight.bold,
+          // ),
           speed: Duration(milliseconds: 200),
         ),
         actions: [
