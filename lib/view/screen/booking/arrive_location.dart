@@ -6,6 +6,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
+import 'package:scholarar/util/color_resources.dart';
 
 
 class ArriveScreen extends StatefulWidget {
@@ -219,7 +220,7 @@ class _ArriveScreenState extends State<ArriveScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             child: Row(
                               children: [
-                                Icon(CupertinoIcons.stop_circle_fill,color: Colors.red,),
+                                Icon(CupertinoIcons.stop_circle_fill,color: ColorResources.redColor,),
                                 SizedBox(width: 20,),
                                 Text("Fun mall",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),)
                               ],
