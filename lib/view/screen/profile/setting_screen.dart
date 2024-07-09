@@ -23,6 +23,7 @@ String urlImagProfile ='https://www.pngitem.com/pimgs/m/146-1468479_my-profile-i
 
 class _SettingScreenState extends State<SettingScreen> {
   final ImagePicker _picker = ImagePicker();
+  bool isLoading = true;
   XFile? _image;
   Future<void> pickImage(ImageSource source) async {
     final XFile? selectedImage = await _picker.pickImage(source: source);
@@ -30,18 +31,44 @@ class _SettingScreenState extends State<SettingScreen> {
       _image = selectedImage;
     });
   }
-
-  //create singout function
-  // void signOut() async {
-  //   await FirebaseAuth.instance.signOut();
-  //   Get.offAll(SignInAccountScreen());
-  // }
   AuthController authController = Get.find<AuthController>();
+  init() async {
+    await authController.getDriverProfileController();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<AuthController>(builder: (authController) {
       return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: ColorResources.primaryColor,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          backgroundColor: ColorResources.backgroundBannerColor,
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            'Settings',
+            style: TextStyle(
+              color: ColorResources.primaryColor,
+            ),
+          ),
+        ),
         body: _buildBody(),
       );
     });
@@ -53,7 +80,6 @@ class _SettingScreenState extends State<SettingScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               Container(
                   height: Get.height * 0.4,
                   decoration: BoxDecoration(
@@ -61,8 +87,8 @@ class _SettingScreenState extends State<SettingScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        ColorResources.primaryColor.withOpacity(0.7),
-                       // Colors.lightBlueAccent,
+                        ColorResources.whiteBackgroundColor,
+
                         ColorResources.whiteBackgroundColor,
 
                       ],
@@ -86,14 +112,14 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
             ],
           ),
-          Positioned(top: 40, left: 10, right: 10, child: _buildProfile()),
+          Positioned(top: 40, left: 10, right: 10, child: _buildProfile(context)),
         ],
       ),
     );
   }
 
   //Todo : _buildProfile
-  Widget _buildProfile() {
+  Widget _buildProfile(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -107,7 +133,6 @@ class _SettingScreenState extends State<SettingScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              SizedBox(height: 16),
               //Todo : Image Profile
               _image == null
                   ? Container(
@@ -120,12 +145,21 @@ class _SettingScreenState extends State<SettingScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-              )
-                  : CircleAvatar(
+              ) : CircleAvatar(
                 backgroundImage: Image.file(
                   File(_image!.path),
                 ).image,
                 radius: 50,
+              ),
+              //Todo: GetUsername
+              Text(authController.userDriverMap?['userDetails']['first_name'] +
+                  ' ' +
+                  authController.userDriverMap?['userDetails']['last_name'] ?? "N/A",
+                style: TextStyle(color: ColorResources.primaryColor, fontSize: 20),
+              ),
+              //Todo: GetEmail
+              Text(authController.userDriverMap?['email'],
+                style: TextStyle(color: ColorResources.primaryColor, fontSize: 16),
               ),
               //Todo: pickImage
               SizedBox(height: 16),
@@ -133,7 +167,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 onPressed: () => nextScreen(context, ProfileScreen()),
                 icon: Icon(Icons.edit, color: ColorResources.primaryColor),
                 label: Text(
-                  'Edit Profile',
+                  'កែប្រែប្រវត្តិរូប',
                   style: TextStyle(
                     color: ColorResources.primaryColor,
                     fontSize: 16,
@@ -180,60 +214,84 @@ class _SettingScreenState extends State<SettingScreen> {
                 color: Colors.grey[300],
               ),
               SizedBox(height: 32),
-              CustomListWidget.customListTileSettingScreen(
-                title: 'Log Out',
-                icon: FontAwesomeIcons.signOutAlt,
-                onPress: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text("Log Out ", style: textStyleMedium.copyWith(color: ColorResources.blackColor, fontSize: 20),),
-                              ],
-                            ),
-                            //line
-                            SizedBox(height: 10,),
-                            Container(
-                              height: 1,
-                              color: ColorResources.primaryColor,
-                            ),
-                            SizedBox(height: 10,),
-                            Icon(Icons.error_outline, color: ColorResources.redColor, size:60,),
-                            Row(
-                              children: [
-
-                                Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                                  child: Text(
-                                    'Are you sure, you wish to log Out?',
-                                    style: textStyleMedium,
-                                  ),
-                                ),
-
-                              ],
-                            ),
-                          ],
-                        ),
-                        actionsPadding: EdgeInsets.symmetric(
-                            vertical: 16, horizontal: 16),
-                        actions: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: GestureDetector(
+                  onTap: (){
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Column(
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Container(
+                              Row(
+                                children: [
+                                  Text("Log Out ", style: textStyleMedium.copyWith(color: ColorResources.blackColor, fontSize: 20),),
+                                ],
+                              ),
+                              //line
+                              SizedBox(height: 10,),
+                              Container(
+                                height: 1,
+                                color: ColorResources.primaryColor,
+                              ),
+                              SizedBox(height: 10,),
+                              Icon(Icons.error_outline, color: ColorResources.redColor, size:60,),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                                    child: Text(
+                                      'Are you sure, you wish to log Out?',
+                                      style: textStyleMedium,
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            ],
+                          ),
+                          actionsPadding: EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 16),
+                          actions: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(16)),
+                                        color: ColorResources.greyColor.withOpacity(0.5),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0,
+                                          horizontal: 32,
+                                        ),
+                                        child: Text(
+                                          'Close',
+                                          style: TextStyle(
+                                            color: ColorResources.whiteBackgroundColor,
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await authController.signOut(context);
+                                  },
+                                  child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
-                                          Radius.circular(16)),
-                                      color: ColorResources.greyColor.withOpacity(0.5),
+                                        Radius.circular(16),
+                                      ),
+                                      color: ColorResources.primaryColor.withOpacity(0.5),
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -241,46 +299,38 @@ class _SettingScreenState extends State<SettingScreen> {
                                         horizontal: 32,
                                       ),
                                       child: Text(
-                                        'Close',
+                                        'Log Out',
                                         style: TextStyle(
-                                          color: ColorResources.whiteBackgroundColor,
+                                          color: ColorResources.redColor,
                                         ),
-                                      ),
-                                    )),
-                              ),
-                              Spacer(),
-                              GestureDetector(
-                                onTap: () async {
-                                  await authController.signOut(context);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(16),
-                                    ),
-                                    color: ColorResources.primaryColor.withOpacity(0.5),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8.0,
-                                      horizontal: 32,
-                                    ),
-                                    child: Text(
-                                      'Log Out',
-                                      style: TextStyle(
-                                        color: ColorResources.redColor,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.signOutAlt,
+                        color: ColorResources.primaryColor,
+                      ),
+                      SizedBox(width: 16),
+                      Text(
+                        'Log Out',
+                        style: TextStyle(
+                          color: ColorResources.primaryColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: 16),
             ],
