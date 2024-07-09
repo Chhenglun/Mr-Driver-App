@@ -7,25 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:327925279311:android:746df36636eccd351cd83a",
-        "android_client_info": {
-          "package_name": "com.example.mr_driver"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCuD_7nUWnRo39f1bEPxGXRfR6dwzPZMQ4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:327925279311:android:09cf4bcaa1e1005f1cd83a",
         "android_client_info": {
           "package_name": "com.example.mr_driver_app"

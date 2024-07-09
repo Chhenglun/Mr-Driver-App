@@ -1,12 +1,14 @@
 // ignore_for_file: prefer_final_fields
 
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/multipart/form_data.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:scholarar/data/api/api_client.dart';
 import 'package:scholarar/data/model/body/auth_model.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path/path.dart' as path;
 
 class AuthRepository {
   final DioClient dioClient;
@@ -54,10 +56,7 @@ class AuthRepository {
       String firstName , String lastName ,String email ,
       String password , String phoneNumber ,
       String gender , String dateOfBirth,
-      String iDCard , String driving,
-      String drivingLicense, String nationality,
-      String province, String district,
-      String commune, String village
+      XFile iDCard , XFile drivingLicense
       )
   async{
     Map<String, dynamic> body = {
@@ -68,26 +67,31 @@ class AuthRepository {
       "phone_number": phoneNumber,
       "date_of_birth": dateOfBirth,
       "gender": gender,
-      "id_card": iDCard,
-      "driving_license": drivingLicense,
-      "nationality": nationality,
-      "province": province,
-      "district": district,
-      "commune": commune,
-      "village": village,
     };
-    try {
-      Response response = await dioClient.postData(
-        AppConstants.registerDriver, body,
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      );
+    try{
+      List<MultipartBody> files = [];
+      if(iDCard != null){
+        files.add(MultipartBody('id_card', iDCard));
+      }
+      if(drivingLicense != null){
+        files.add(MultipartBody('driving_license', drivingLicense));
+      }
+      final response = await dioClient.postMultipartData(AppConstants.registerDriver,
+          {
+            "first_name": firstName,
+            "last_name": lastName,
+            "email": email,
+            "password": password,
+            "phone_number": phoneNumber,
+            "date_of_birth": dateOfBirth,
+            "gender": gender,
+          }, files);
       return response;
-    } catch (e) {
+    }catch(e){
       throw e.toString();
     }
   }
+
   //get driver profile
   Future<Response> getDriverProfileRepo() async {
     try {
