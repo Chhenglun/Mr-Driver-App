@@ -5,7 +5,7 @@ late double latCur;
 late double longCur;
 late double latDir;
 late double longDir;
-
+String? frmTokenPublic;
 class AppConstants {
   static const String theme = "authenticator_theme";
   static const String appName = "Authenticator";
