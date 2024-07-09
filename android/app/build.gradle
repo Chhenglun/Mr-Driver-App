@@ -1,6 +1,9 @@
+
+
 plugins {
     id "com.android.application"
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -13,19 +16,13 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
-if (flutterVersionCode == null) {
-    flutterVersionCode = "1"
-}
-
-def flutterVersionName = localProperties.getProperty("flutter.versionName")
-if (flutterVersionName == null) {
-    flutterVersionName = "1.0"
-}
+// Provide default values directly if properties are not set
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode", "1").toInteger()
+def flutterVersionName = localProperties.getProperty("flutter.versionName", "1.0")
 
 android {
     namespace = "com.example.mr_driver_app"
-    compileSdkVersion 34 // Ensure this is set correctly
+    compileSdkVersion 34
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -34,9 +31,9 @@ android {
 
     defaultConfig {
         applicationId "com.example.mr_driver_app"
-        minSdkVersion 21 // Ensure this is set correctly
-        targetSdkVersion 34 // Update this to at least 33 or 34
-        versionCode flutterVersionCode.toInteger()
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode flutterVersionCode
         versionName flutterVersionName
     }
 
@@ -52,11 +49,8 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Reference the kotlin_version from top-level build.gradle
-    implementation platform('com.google.firebase:firebase-bom:28.4.0')
+    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-messaging'
 }
-
-// Apply the Google services plugin
-apply plugin: 'com.google.gms.google-services'

@@ -48,37 +48,23 @@ class CustomListWidget {
     required Function onPress,
     required IconData iconleading, 
   }) {
-    return Container(
-      width: Get.width * 0.9,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            ColorResources.backgroundBannerColor,
-            ColorResources.primaryColor.withOpacity(0.4)
-          ],
+    return ListTile(
+      leading: Icon(iconleading, color: Colors.blueGrey,) ,
+      title: Text(
+        title,
+        style: textStyleMedium.copyWith(
+          fontSize: 14,
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
         ),
-        borderRadius: BorderRadius.circular(10),
       ),
-      child: ListTile(
-        leading: Icon(iconleading, color: Colors.blueGrey,) ,
-        title: Text(
-          title,
-          style: textStyleMedium.copyWith(
-            fontSize: 18,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        titleAlignment: ListTileTitleAlignment.center,
-        trailing: IconButton(
-          icon: Icon(Icons.edit , color: Colors.blueGrey, size: 30,),
-          color: ColorResources.primaryColor,
-          onPressed: () => onPress(),
-        ),
-        onTap: () => onPress(),
+      titleAlignment: ListTileTitleAlignment.center,
+      trailing: IconButton(
+        icon: Icon(Icons.edit , color: Colors.blueGrey, size: 20,),
+        color: ColorResources.primaryColor,
+        onPressed: () => onPress(),
       ),
+      onTap: () => onPress(),
     );
   }
 
