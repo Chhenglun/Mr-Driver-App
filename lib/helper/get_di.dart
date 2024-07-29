@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/controller/book_store_controller.dart';
 import 'package:scholarar/controller/course_controller.dart';
+import 'package:scholarar/controller/get_booking_request.dart';
 import 'package:scholarar/controller/home_controller.dart';
 import 'package:scholarar/controller/localization_controller.dart';
 import 'package:scholarar/controller/splash_controller.dart';
@@ -15,6 +16,7 @@ import 'package:scholarar/data/model/response/language_model.dart';
 import 'package:scholarar/data/repository/auth_repository.dart';
 import 'package:scholarar/data/repository/book_store_repository.dart';
 import 'package:scholarar/data/repository/course_repository.dart';
+import 'package:scholarar/data/repository/get_booking_request.dart';
 import 'package:scholarar/data/repository/home_repository.dart';
 import 'package:scholarar/data/repository/language_repository.dart';
 import 'package:scholarar/data/repository/scholarship_repository.dart';
@@ -40,6 +42,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => BookStoreRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => CourseRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeRepository(dioClient: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => GetBookingRequestRepository(dioClient: Get.find(), sharedPreferences: sharedPreferences));
 
 
   // Controller
@@ -51,6 +54,8 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => BookStoreController(bookStoreRepository: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => CourseController(courseRepository: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeController(homeRepository: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => GetBookingRequestController(getBookingRequest: Get.find(), sharedPreferences: Get.find()));
+
 
   // Retrieving localized data
   Map<String, Map<String, String>> languages = Map();
