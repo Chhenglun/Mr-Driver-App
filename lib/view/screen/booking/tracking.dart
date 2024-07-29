@@ -266,7 +266,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
-                                      padding: EdgeInsets.symmetric(vertical: 16,),
+                                      padding: EdgeInsets.symmetric(vertical: 8,),
                                       child: Text("ទទួលការកក់",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
                                     )
                                 ),

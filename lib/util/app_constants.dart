@@ -36,7 +36,7 @@ class AppConstants {
   static const String getSubscription = "api/subscription";
 
   // auth
-  static const String google_key_api = "AIzaSyBFNAY84AgLd1BMoYCeH-tSLkZ5m1_6v3A";
+  static const String google_key_api = "AIzaSyCf0IGyGxf_yD2HmVT7Ene49q-eT0RSN0s";
   static const String phoneSignIn = "";
   static const String sendVerificationSMS = "";
   static const String verificationCode = "";
@@ -50,6 +50,8 @@ class AppConstants {
   static const String forgetPassword = "";
   static const String deviceInfo = "";
   static const String changePhoneNumber = "";
+  //get request
+  static const String getBookingRequest = "/api/trips/pendingtrip?driver_id=66712eb30fd44ef189554e4b&lat=10.345500&lng=106.412500";
 
   // course
   static const String getCourse = "/api/courses";
