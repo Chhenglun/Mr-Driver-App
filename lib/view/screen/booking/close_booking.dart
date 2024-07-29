@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scholarar/controller/get_booking_request.dart';
+import 'package:scholarar/data/repository/get_booking_request.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/screen/booking/tracking.dart';
@@ -18,12 +22,52 @@ class _CloseBookingState extends State<CloseBooking> {
   final Completer<GoogleMapController> _controller = Completer();
   bool locationFetched = false;
   LatLng currentPosition = const LatLng(0,0);
+  bool isLoading = true;
+  GetBookingRequestController getBookingRequestController = Get.find<GetBookingRequestController>();
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
+  init() async {
+    await getBookingRequestController.getRequest();
+    setState(() {
+      isLoading = false;
+    });
+  }
+  void _configureFirebaseListeners() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _showAlertDialog(context, message.notification?.title, message.notification?.body);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _showAlertDialog(context, message.notification?.title, message.notification?.body);
+    });
+  }
+
+  void _showAlertDialog(BuildContext context, String? title, String? body) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title ?? 'Notification'),
+          content: Text(body ?? 'You have a new notification'),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     _checkLocationPermissions();
+    init();
+    _configureFirebaseListeners();
   }
   void _checkLocationPermissions() async {
     bool serviceEnabled;
@@ -67,95 +111,97 @@ class _CloseBookingState extends State<CloseBooking> {
   }
   @override
   Widget build(BuildContext context) {
-    return Stack(
-        alignment: Alignment.bottomCenter,
-        children:[
-          GoogleMap(
-            initialCameraPosition:  CameraPosition( zoom: 14.5, target: currentPosition),
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-              if (locationFetched) {
-                controller.animateCamera(CameraUpdate.newLatLng(currentPosition));
-              }
-            },
-            markers: {
-              Marker(markerId: const MarkerId("current Position"), position: currentPosition)
-            },
-            // myLocationButtonEnabled: true,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width / 2.5,
-                margin: EdgeInsets.symmetric(horizontal: 20,vertical: 40),
-                alignment: Alignment.topLeft,
-                child: ElevatedButton(
-                    style: const ButtonStyle(
-                      backgroundColor:
-                      MaterialStatePropertyAll(Colors.red),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.arrow_back_ios,
-                          color: ColorResources.whiteColor,
-                        ),
-                        Text(
-                          'ត្រឡប់ក្រោយ',
-                          style: TextStyle(color: Colors.white),
-                        )
-                      ],
-                    )),
-              ),
-              Spacer(),
-              Container(
-                child: Stack(
-                  children: [
-                    Container(
-                      height: MediaQuery.sizeOf(context).height * 3 / 12,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(topLeft:Radius.circular(32), topRight: Radius.circular(32))
+    return Scaffold(
+      body: Stack(
+          alignment: Alignment.bottomCenter,
+          children:[
+            GoogleMap(
+              initialCameraPosition:  CameraPosition( zoom: 14.5, target: currentPosition),
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+                if (locationFetched) {
+                  controller.animateCamera(CameraUpdate.newLatLng(currentPosition));
+                }
+              },
+              markers: {
+                Marker(markerId: const MarkerId("current Position"), position: currentPosition)
+              },
+              // myLocationButtonEnabled: true,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width / 2.5,
+                  margin: EdgeInsets.symmetric(horizontal: 20,vertical: 40),
+                  alignment: Alignment.topLeft,
+                  child: ElevatedButton(
+                      style: const ButtonStyle(
+                        backgroundColor:
+                        MaterialStatePropertyAll(Colors.red),
                       ),
-                    ),
-                    Container(
-                      height: MediaQuery.sizeOf(context).height * 3 / 12,
-                      alignment: Alignment.topLeft,
-                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-                      child:  Column(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("អ្នកកំពុងប្រេីប្រាស់កម្មវិធី",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 20),),
-                          SizedBox(height: 5,),
-                          const Text("អ្នកកំពុងបេីកការទទួលការកក់...",style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 14),),
-                          SizedBox(height: 50,),
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.red[500]),
-                              onPressed: () {
-                                nextScreen(context, BookingScreen());
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Text("ឈប់ទទួលការកក់",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
-                              )
+                          Icon(
+                            Icons.arrow_back_ios,
+                            color: ColorResources.whiteColor,
+                          ),
+                          Text(
+                            'ត្រឡប់ក្រោយ',
+                            style: TextStyle(color: Colors.white),
                           )
                         ],
-                      ),
-                    ),
-                  ],
+                      )),
                 ),
-              ),
-            ],
-          ),
-        ]
+                Spacer(),
+                Container(
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: MediaQuery.sizeOf(context).height * 3 / 12,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(topLeft:Radius.circular(32), topRight: Radius.circular(32))
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery.sizeOf(context).height * 3 / 12,
+                        alignment: Alignment.topLeft,
+                        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                        child:  Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("អ្នកកំពុងប្រេីប្រាស់កម្មវិធី",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 20),),
+                            SizedBox(height: 5,),
+                            const Text("អ្នកកំពុងបេីកការទទួលការកក់...",style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal,fontSize: 14),),
+                            SizedBox(height: 50,),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(backgroundColor: Colors.red[500]),
+                                onPressed: () {
+                                  nextScreen(context, BookingScreen());
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.symmetric(vertical: 8),
+                                  child: Text("ឈប់ទទួលការកក់",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
+                                )
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ]
+      ),
     );
   }
 }

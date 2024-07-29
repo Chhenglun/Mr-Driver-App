@@ -182,7 +182,7 @@ class _ArriveScreenState extends State<ArriveScreen> {
                               Text("User123",style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
                               Container(
                                 width: MediaQuery.of(context).size.width / 3.5,
-                                margin: EdgeInsets.symmetric(horizontal: 35),
+                                margin: EdgeInsets.symmetric(horizontal: 25),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
