@@ -1,3 +1,5 @@
+
 build/app/intermediates/stripped_native_libs/debug/out/lib/arm64-v8a/libVkLayer_khronos_validation.so
 build/app/outputs/flutter-apk/app-debug.apk
 build/app/intermediates/assets/debug/flutter_assets/kernel_blob.bin
+
