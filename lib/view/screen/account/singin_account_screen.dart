@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/account/signup_account_screen.dart';
 
 class SignInAccountScreen extends StatefulWidget {
@@ -18,8 +19,8 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   AuthController authController = Get.find<AuthController>();
   final phoneNumberForcusNode = FocusNode();
   final passwordForcusNode = FocusNode();
-  final _emailControlle = TextEditingController().obs;
-  final _passwordController = TextEditingController().obs;
+  final TextEditingController _emailPhoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   var obscureText = true.obs;
   final _form = GlobalKey<FormState>();
   var enterPassword = "";
@@ -28,26 +29,43 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
   void togglePasswordVisibility() {
     obscureText.value = !obscureText.value;
   }
-  bool isValidEmail(String email) {
+  /*bool isValidEmail(String email) {
     final RegExp regex = RegExp(
         r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$'
     );
     return regex.hasMatch(email);
+  }*/
+
+  bool isValidEmail(String email) {
+    final RegExp regex =
+    RegExp(r'^[a-zA-Z0-9.a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+    return regex.hasMatch(email);
   }
 
-  Future<void> submit() async {
+  Future<void> submit1() async {
     final isValid = _form.currentState!.validate();
     if (isValid) {
       _form.currentState!.save();
-      print(enterPhone);
-      print(enterPassword);
+      authController.loginWithEmailNew(
+        context,
+        email: isValidEmail(_emailPhoneController.text)
+            ? _emailPhoneController.text
+            : '',
+        phoneNumber: isValidEmail(_emailPhoneController.text)
+            ? ''
+            : _emailPhoneController.text,
+        password: _passwordController.text,
+      );
+    }else{
+      Navigator.pop(Get.context!);
+      customShowSnackBar('Invalid Email Phone or Password!'.tr, Get.context!, isError: true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorResources.whiteBackgroundColor,
+      backgroundColor: ColorResources.secondaryColor,
       body: _buildBody(context),
     );
   }
@@ -68,15 +86,10 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                     child: Column(
                       children: [
                         Container(
-                          height: 100,
+                          height: 150,
+                          width: Get.width * 0.5,
                           color: Colors.transparent,
-                          child: CircleAvatar(
-                            radius: 100,
-                            backgroundColor:
-                                ColorResources.backgroundBannerColor,
-                            backgroundImage:
-                                AssetImage('assets/images/logo.jpg'),
-                          ),
+                          child: Image.asset('assets/images/logo.jpg', fit: BoxFit.cover,),
                         ),
                         SizedBox(height: 20),
                         //Todo : _buildPhone
@@ -85,35 +98,33 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "អ៊ីម៉ែល",
-                              style:
-                                  TextStyle(color: ColorResources.blackColor),
+                              "អ៊ីម៉ែល ឬ លេខទូរស័ព្ទ",
+                              style: TextStyle(color: ColorResources.blackColor),
                             ),
                             SizedBox(height: 8),
                             SizedBox(
                               height: 60,
                               child: TextFormField(
-                                controller: _emailControlle.value,
+                                controller:_emailPhoneController,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (value) =>
-                                    phoneNumberForcusNode.requestFocus(),
+                                onFieldSubmitted: (value) => phoneNumberForcusNode.requestFocus(),
                                 decoration: InputDecoration(
                                   prefixIcon: Icon(Icons.phone),
                                   // labelText: 'Phone Number',
-                                  hintText: 'Enter your Email ',
+                                  hintText: 'Enter your Email or Phone number',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
                                 validator: (value) {
                                   if (value == null ||
-                                      value.trim().length < 9) {
-                                    return 'phone number muse be 9 character or long';
+                                      value.trim().length < 8) {
+                                    return 'phone number or email is Invalid';
                                   }
                                   return null;
                                 },
-                               // onSaved: (newValue) =>  = newValue!,
+                                // onSaved: (newValue) =>  = newValue!,
                               ),
                             ),
                           ],
@@ -135,7 +146,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                                 child: TextFormField(
                                   focusNode: passwordForcusNode,
                                   cursorColor: Colors.blueGrey,
-                                  controller: _passwordController.value,
+                                  controller: _passwordController,
                                   obscureText: obscureText.value,
                                   decoration: InputDecoration(
                                     prefixIcon: Icon(Icons.lock),
@@ -186,16 +197,17 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                             height: 50,
                             width: double.infinity,
                             child: TextButton(
-                              onPressed: () async{
+                              onPressed: submit1,
+                              /*onPressed: () async{
                                 if(_form.currentState!.validate()){
-                                  if(_emailControlle.value.text.isNotEmpty && _passwordController.value.text.isNotEmpty){
-                                    await authController.loginWithEmailNew(context, email:_emailControlle.value.text, password:_passwordController.value.text);
+                                  if(_emailPhoneController.value.text.isNotEmpty && _passwordController.value.text.isNotEmpty){
+                                    await authController.loginWithEmailNew(context, email:_emailPhoneController.value.text, password:_passwordController.value.text);
                                 }else{
                                   Get.snackbar('Error', 'Please enter valid email and password');
                                 }
                                 // nextScreenNoReturn(context, AppScreen());
                                 // submit();
-                              }},
+                              }},*/
                               child: Text(
                                 'ចូលគណនី',
                                 style: TextStyle(

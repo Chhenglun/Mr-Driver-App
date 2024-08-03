@@ -106,6 +106,7 @@ class AuthController extends GetxController implements GetxService {
   // final phoneNumber = TextEditingController(); // Controller for phone number input
   GlobalKey<FormState> signUpFormKey = GlobalKey<FormState>(); // Form key for form validation
   String token = "";
+  String role = "";
   final String key = "secure_basicInfo_key";
   static const String noCache = "noCache";
 
@@ -164,6 +165,11 @@ class AuthController extends GetxController implements GetxService {
       nextScreen(context, LoginScreen());
     }
   }
+  //Todo: refresh
+  void refreshScreen() {
+    update(); // This will rebuild the GetBuilder or GetX widget that uses this controller
+  }
+
 
 //Todo : GetIPNetwork
   Future<void> getNetworkIP() async {
@@ -300,49 +306,59 @@ class AuthController extends GetxController implements GetxService {
 
   //Todo : LoginWithEmailNew
   Future loginWithEmailNew(BuildContext context,
-      {required String email, required String password}) async {
+      {String? email, String? phoneNumber, required String password}) async {
     loadingDialogs(Get.context!);
     try {
-      print("LoginWithEmailNew : $email, $password");
+      //print("LoginPassenger: $email, $phoneNumber, $password");
       _isLoading = true;
       update();
-
-      Response apiResponse =
-          await authRepository.loginWithEmailNew(email, password, context);
-
+      Response apiResponse = await authRepository.loginWithEmailNew(email!, phoneNumber!, password, context);
       if (apiResponse.statusCode == 200) {
         Navigator.pop(Get.context!);
         Map<String, dynamic> map = apiResponse.body;
 
+        // Post device token
+        //await postDeviceToken(map['_id']);
+
         try {
-          token = map["token"];
-          String role = map["role"];
-          if (role == "driver") {
-            print("${map["role"]} : Driver");
-          } else {
-            print("User");
-          }
+          role = map['role'];
+          print("Role: $role");
         } catch (e) {
           print(e.toString());
-          print("Token Error : ${apiResponse.body['message']}");
+          print("Role Error: $e");
+        }
+
+        try {
+          token = map["token"];
+        } catch (e) {
+          print(e.toString());
+          customShowSnackBar("Invalid phone/email or password!".tr, Get.context!, isError: true);
         }
 
         if (token != null && token.isNotEmpty) {
-          await _tokenHelper.saveToken(token: token).then((_) async {
-            nextScreenNoReturn(Get.context!, SplashScreen());
-          });
+          if (role == "driver") {
+            await _tokenHelper.saveToken(token: token).then((_) async {
+              customShowSnackBar('successfulLoginAccount'.tr, Get.context!, isError: false);
+              nextScreenNoReturn(Get.context!, SplashScreen());
+            });
+          } else {
+            customShowSnackBar('Invalid role! You are not a passenger.'.tr, Get.context!, isError: true);
+          }
+        } else {
+          customShowSnackBar('theAccountHasAlreadyBeenTaken'.tr, Get.context!, isError: true);
         }
 
         _isLoading = false;
         update();
       } else {
-        customShowSnackBar("${apiResponse.body['message']}".tr, Get.context!);
         Navigator.pop(Get.context!);
-        nextScreen(context, WaitingScreen());
+        customShowSnackBar('Invalid Email/Phone or Password'.tr, Get.context!, isError: true);
       }
     } catch (e) {
       print("Error B");
       print(e.toString());
+      Navigator.pop(Get.context!);
+      customShowSnackBar('Error during login. Please try again.'.tr, Get.context!, isError: true);
       _isLoading = false;
       update();
     }
@@ -427,11 +443,11 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
-  //RegisterDriverController
+  //Todo: RegisterDriverController
   Future registerDriverController(BuildContext context, {
     required String firstName,
     required String lastName,
-    required String email,
+    String? email,
     required String password,
     required String phoneNumber,
     required String gender,
@@ -445,7 +461,7 @@ class AuthController extends GetxController implements GetxService {
       Response apiResponse = await authRepository.registerDriver(
         firstName,
         lastName,
-        email,
+        email!,
         password,
         phoneNumber,
         gender,
@@ -456,8 +472,9 @@ class AuthController extends GetxController implements GetxService {
       if (apiResponse.body['status'] == 201 && apiResponse.body['status_code'] == "success") {
         print("status  : ${apiResponse.body['status']}");
         print("Register Success : ${apiResponse.body['status_code']}");
-        Map<String, dynamic> map = apiResponse.body;
-        String message = "";
+        // Map<String, dynamic> map = apiResponse.body;
+        Map map = apiResponse.body;
+        String message = "hello updateToken";
         try {
           message = map["status_code"];
           print("Message : $message");
@@ -469,17 +486,27 @@ class AuthController extends GetxController implements GetxService {
         } catch (e) {
           print(e.toString());
         }
+
         if (token != null && token.isNotEmpty) {
           _tokenHelper.saveToken(token: token);
         }
         customShowSnackBar('successfulCreateAccount'.tr, Get.context!, isError: false);
         await _tokenHelper.saveToken(token: token).then((_) async {
+         // nextScreen(Get.context!, SplashScreen());
+          if(map["driver"]["status_register"] == "waiting") {
+            nextScreen(Get.context!, WaitingScreen());
+          }else {
+            nextScreenNoReturn(Get.context!, SplashScreen());
+          }
+        });
+
+        /*await _tokenHelper.saveToken(token: token).then((_) async {
           if(apiResponse.body['driver']["status_register"] == "waiting"){
             nextScreen(Get.context!, WaitingScreen());
           }else{
             nextScreenNoReturn(Get.context!, AppScreen());
           }
-        });
+        });*/
       } else {
         customShowSnackBar('theAccountHasAlreadyBeenTaken'.tr, Get.context!,
             isError: true);

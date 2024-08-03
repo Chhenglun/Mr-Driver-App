@@ -69,5 +69,23 @@ class FirebaseAPI {
     final fcmToken = await _firebaseMessaging.getToken();
     frmTokenPublic = fcmToken;
     print('fcmToken: $fcmToken');
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleMessage(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleMessage(message);
+    });
+  }
+  void _handleMessage(RemoteMessage message) {
+    if (message.data.containsKey('usertripID') && message.data.containsKey('drivertripID')) {
+      String usertripID = message.data['usertripID'];
+      String drivertripID = message.data['drivertripID'];
+      print('usertripID: $usertripID, drivertripID: $drivertripID');
+      // Handle the IDs as needed
+    } else {
+      print('Notification does not contain trip IDs');
+    }
   }
 }

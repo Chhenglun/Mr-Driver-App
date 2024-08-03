@@ -25,13 +25,28 @@ class _BookingScreenState extends State<BookingScreen> {
   StreamSubscription<Position>? positionStreamSubscription;
   String url = "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
   Timer? driverTimer;
-
+  bool isLoading = true;
+  Future<void> init() async {
+    setState(() {
+      isLoading = false;
+    });
+  }
   @override
   void initState() {
+    setState(() {
+      init();
+      _checkLocationPermissions();
+    });
     super.initState();
+
+  }
+  /*@override
+  void initState() {
+    super.initState();
+    isLoading = false;
     _checkLocationPermissions();
   }
-
+*/
   @override
   void dispose() {
     positionStreamSubscription?.cancel();
@@ -39,23 +54,36 @@ class _BookingScreenState extends State<BookingScreen> {
     super.dispose();
   }
 
-  void getPolyPoint() async{
+  void getPolyPoint() async {
     PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      AppConstants.google_key_api,
-      PointLatLng(currentPosition.latitude, currentPosition.longitude),
-      PointLatLng(destination.latitude, destination.longitude),
+
+    // Create a PolylineRequest object with required parameters
+    PolylineRequest request = PolylineRequest(
+      origin: PointLatLng(currentPosition.latitude, currentPosition.longitude),
+      destination: PointLatLng(destination.latitude, destination.longitude),
+      mode: TravelMode.driving, // Set the mode of travel if required
     );
-    if (result.points.isNotEmpty) {
-      polyLineCoordinates.clear();
-      result.points.forEach((PointLatLng point) {
-        polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-      setState(() {
-        print("=====>>>>>>>Polyline coordinates updated");
-      });
-    } else {
-      print('=====>>>>>>No points found or error in fetching points');
+
+    try {
+      // Pass the request object and API key to getRouteBetweenCoordinates
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        request: request,
+        googleApiKey: AppConstants.google_key_api,
+      );
+
+      if (result.points.isNotEmpty) {
+        polyLineCoordinates.clear();
+        result.points.forEach((PointLatLng point) {
+          polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
+        });
+        setState(() {
+          print("=====>>>>>>>Polyline coordinates updated");
+        });
+      } else {
+        print('=====>>>>>>No points found or error in fetching points');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
     }
   }
   void _checkLocationPermissions() async {
@@ -128,7 +156,9 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: isLoading != false
+          ? Center(child: CircularProgressIndicator())
+          : Stack(
           children: [
             GoogleMap(
               initialCameraPosition: CameraPosition(

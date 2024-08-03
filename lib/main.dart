@@ -23,7 +23,9 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/messages.dart';
 import 'package:scholarar/util/notification_service.dart';
+import 'package:scholarar/view/screen/account/waiting_screen.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helper/get_di.dart' as di;
 
@@ -61,11 +63,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+
   firebase() async {
     await Firebase.initializeApp();
     await FirebaseMessaging.instance.getToken();
     await FirebaseMessaging.instance.onTokenRefresh;
-    String? token = await FirebaseMessaging.instance.getAPNSToken();
+    String? fcmtoken = await FirebaseMessaging.instance.getAPNSToken();
 
     await FirebaseAPI().initNotifications();
     if(Platform.isAndroid){
@@ -75,8 +78,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('onMessages: ${message.notification!.title!}');
     });
-    if(token != null) {
-      print('token $token');
+    if(fcmtoken != null) {
+      print('fcmtoken $fcmtoken');
     }
     await FirebaseAPI().initNotifications();
   }
@@ -98,12 +101,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             customNotificationDialog(
               context: Get.context!,
               title: message.notification!.title!,
-              content: message.notification!.body!,
+              username: message.notification!.body!,
               onTap: () {
                 Get.back();
                 FlutterAppBadger.removeBadge();
               },
-              btnText: 'ok'.tr,
+              //btnText: 'ok'.tr,
             );
           });
         });
@@ -125,6 +128,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
   @override
   Widget build(BuildContext context) {
+
     return GetBuilder<ThemeController>(builder: (themeController) {
       return GetBuilder<LocalizationController>(builder: (localizeController) {
         return GetMaterialApp(
@@ -156,6 +160,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           },
           fallbackLocale: Locale(AppConstants.languages[0].languageCode!,
               AppConstants.languages[0].countryCode),
+          //home: SplashScreen(),
+          //please validate me if user don't have aprove by admin so it still go to waiting screen 
+         // home: SplashScreen(),
           home: SplashScreen(),
         );
       });

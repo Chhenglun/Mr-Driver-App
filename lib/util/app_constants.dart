@@ -14,6 +14,9 @@ class AppConstants {
   static const String registerDriver = "/api/users/register-driver";
   static const String getDriverProfile = "/api/users/profile";
   static const String statTrip = "/api/trips/start";
+  static const String updateToken = "/api/trips/updateDriverToken";
+  static const String acceptRequest = "/api/trips/accept";
+  static const String getTripID = "/api/trips/available";
   //old project
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";

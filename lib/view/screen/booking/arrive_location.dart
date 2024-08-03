@@ -39,23 +39,36 @@ class _ArriveScreenState extends State<ArriveScreen> {
     super.dispose();
   }
 
-  void getPolyPoint() async{
+  void getPolyPoint() async {
     PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      AppConstants.google_key_api,
-      PointLatLng(currentPosition.latitude, currentPosition.longitude),
-      PointLatLng(destination.latitude, destination.longitude),
+
+    // Create a PolylineRequest object with required parameters
+    PolylineRequest request = PolylineRequest(
+      origin: PointLatLng(currentPosition.latitude, currentPosition.longitude),
+      destination: PointLatLng(destination.latitude, destination.longitude),
+      mode: TravelMode.driving, // Set the mode of travel if required
     );
-    if (result.points.isNotEmpty) {
-      polyLineCoordinates.clear();
-      result.points.forEach((PointLatLng point) {
-        polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-      setState(() {
-        print("=====>>>>>>>Polyline coordinates updated");
-      });
-    } else {
-      print('=====>>>>>>No points found or error in fetching points');
+
+    try {
+      // Pass the request object and API key to getRouteBetweenCoordinates
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        request: request,
+        googleApiKey: AppConstants.google_key_api,
+      );
+
+      if (result.points.isNotEmpty) {
+        polyLineCoordinates.clear();
+        result.points.forEach((PointLatLng point) {
+          polyLineCoordinates.add(LatLng(point.latitude, point.longitude));
+        });
+        setState(() {
+          print("=====>>>>>>>Polyline coordinates updated");
+        });
+      } else {
+        print('=====>>>>>>No points found or error in fetching points');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
     }
   }
   void _checkLocationPermissions() async {

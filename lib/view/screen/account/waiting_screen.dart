@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 
 class WaitingScreen extends StatefulWidget {
@@ -12,19 +14,46 @@ class WaitingScreen extends StatefulWidget {
 }
 
 class _WaitingScreenState extends State<WaitingScreen> {
+  bool isLoading = false;
+  /* AuthController _authController = Get.find<AuthController>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+  init(){
+    setState(() {
+      isLoading = true;
+      _authController.refreshScreen();
+    });
+
+
+  }*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorResources.secondaryColor,
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: ColorResources.primaryColor,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Get.back();
-          },
-        ),
+        /* leading: IconButton(
+        icon: Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () {
+          Get.back();
+        },
+      ),*/
         title: Text("Waiting for verification", style: TextStyle(color: Colors.white)),
+        actions: [
+          IconButton(onPressed: (){
+            setState(() {
+              isLoading = true;
+            },);
+
+          }, icon: FaIcon(FontAwesomeIcons.refresh), color: Colors.white)
+        ],
       ),
       body: Align(
         alignment: Alignment.center,

@@ -9,6 +9,7 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/screen/account/singin_account_screen.dart';
+import 'package:scholarar/view/screen/account/waiting_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../booking/open_booking.dart';
@@ -24,6 +25,21 @@ class _SplashScreenState extends State<SplashScreen> {
   SharedPreferences? sharedPreferences;
   AuthController authController = Get.find<AuthController>();
   SplashController splashController = Get.find<SplashController>();
+  bool isLoading = false;
+  Future<void> init() async {
+    await authController.getDriverProfileController();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  /*@override
+  void initState() {
+    setState(() {
+      init();
+    });
+    super.initState();
+  }*/
 
   afterSplash() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -31,14 +47,15 @@ class _SplashScreenState extends State<SplashScreen> {
     if (mounted) {
       try {
         String token = sharedPreferences!.getString(AppConstants.token)!;
-        if (token.isNotEmpty) {
+        var userRole = authController.userDriverMap?["role"];
+        if (token.isNotEmpty && userRole == "driver") {
           print("First Check Token $token");
           await authController.getDriverProfileController().then((_) {
             nextScreenReplace(Get.context, OpenBooking());
           });
         } else {
           print("Logout Token: ");
-          nextScreenReplace(context, SignInAccountScreen());
+          nextScreenReplace(context, WaitingScreen());
         }
       } catch (e) {
         print('else');
@@ -51,6 +68,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    setState(() {
+      init();
+    });
     super.initState();
     afterSplash();
   }

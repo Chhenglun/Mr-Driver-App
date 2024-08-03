@@ -1,11 +1,20 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scholarar/controller/auth_controller.dart';
+import 'package:scholarar/controller/get_booking_request.dart';
+import 'package:scholarar/util/alert_dialog.dart';
+import 'package:scholarar/util/app_constants.dart';
+import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/booking/close_booking.dart';
+import 'package:scholarar/view/screen/booking/tracking.dart';
 import 'package:scholarar/view/screen/profile/setting_screen.dart';
 
 class OpenBooking extends StatefulWidget {
@@ -17,15 +26,36 @@ class OpenBooking extends StatefulWidget {
 
 class _OpenBookingState extends State<OpenBooking> {
   final Completer<GoogleMapController> _controller = Completer();
+  final AuthController authController = Get.find<AuthController>();
+  final GetBookingRequestController bookingController = Get.find<GetBookingRequestController>();
+  final FirebaseAPI _firebaseAPI = FirebaseAPI();
   bool locationFetched = false;
   LatLng currentPosition = const LatLng(0,0);
-
-
+  bool isLoading = false;
+  //Todo: init
   @override
   void initState() {
+    setState(() {
+      init();
+    });
     super.initState();
     _checkLocationPermissions();
   }
+
+  Future<void> init() async {
+    await authController.getDriverProfileController();
+    await bookingController.getDriverID();
+    setState(() {
+      isLoading = false;
+    });
+  }
+  //Todo: initState
+ /* @override
+  void initState() {
+    super.initState();
+    _checkLocationPermissions();
+    authController.getDriverProfileController();
+  }*/
   void _checkLocationPermissions() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -66,7 +96,10 @@ class _OpenBookingState extends State<OpenBooking> {
   }
   @override
   Widget build(BuildContext context) {
+    var userNextDetails = authController.userDriverMap?['userDetails'];
+    var userIDInfo = bookingController.driverIDList;
     return Scaffold(
+
       body: Stack(
         alignment: Alignment.bottomCenter,
         children:[
@@ -120,18 +153,46 @@ class _OpenBookingState extends State<OpenBooking> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text("អ្នកកំពងប្រេីប្រាស់កម្មវិធី",style: TextStyle(color: Colors.black,fontSize: 20),),
-                            SizedBox(height: 50,),
+                            const SizedBox(height: 16,),
+                            Text("សូមបើកការកក់របស់អ្នក....",style: TextStyle(color: Colors.black,fontSize: 16),),
+                            SizedBox(height: 16,),
+                            /*if (userIDInfo != null && userIDInfo.isNotEmpty)
+                              Text("Passenger ID: ${userIDInfo[0]['passenger_id']['_id']}",
+                                style: TextStyle(color: Colors.black, fontSize: 16),),
+                            SizedBox(height: 8,),*/
+                            //DRIVER ID
+                            /*if (userIDInfo != null && userIDInfo.isNotEmpty)
+                              Text("Driver ID: ${userIDInfo[0]['_id']}",
+                                style: TextStyle(color: Colors.black, fontSize: 16),),*/
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green[500]),
-                                onPressed: () {
-                                  nextScreen(context, CloseBooking());
-                                },
+                              // onPressed: () async {
+                              //   await _firebaseAPI.initNotifications();
+                              //   String? deviceToken = frmTokenPublic; // Use the token obtained from initNotifications
+                              //   String driverId = userNextDetails?["_id"];// Replace with actual driver ID
+                              //   _bookingController.updateToken(deviceToken!, driverId);
+                              // },
+                              onPressed: () async {
+                                await _firebaseAPI.initNotifications();
+                                String? deviceToken = frmTokenPublic; // Use the token obtained from initNotifications
+                                String driverId = userNextDetails?["_id"]; // Ensure this is the correct driver ID
+                                if (deviceToken != null && driverId != null) {
+                                  bookingController.updateToken(deviceToken, driverId);
+                                  isLoading = true;
+                                  //customShowSnackBar('ការបើកការកក់របស់អ្នកទទួលបានជោគជ័យ', context, isError: false);
+                                  nextScreen(context, BookingScreen());
+                                } else {
+                                  customShowSnackBar('Device token or driver ID is missing', context, isError: true);
+
+                                }
+                              },
                                 child: Container(
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.symmetric(vertical: 8),
                                   child: const Text("បេីកការទទួលការកក់",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
                                 ),
                             )
+
                           ],
                         ),
                       ),

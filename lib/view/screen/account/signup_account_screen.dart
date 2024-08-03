@@ -135,7 +135,10 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
     return GetBuilder<AuthController>(builder: (auth) {
       return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: Scaffold(body: _buildBody()),
+        child: Scaffold(
+          backgroundColor: ColorResources.secondaryColor,
+            body: _buildBody(),
+        ),
       );
     });
   }
@@ -153,13 +156,10 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                 child: Column(
                   children: [
                     Container(
-                      height: 100,
+                      height: 150,
+                      width: Get.width * 0.5,
                       color: Colors.transparent,
-                      child: CircleAvatar(
-                        radius: 100,
-                        backgroundColor: ColorResources.backgroundBannerColor,
-                        backgroundImage: AssetImage('assets/images/logo.jpg'),
-                      ),
+                      child: Image.asset('assets/images/logo.jpg', fit: BoxFit.cover,),
                     ),
                     SizedBox(height: 16),
                     _buildTextField("នាមខ្លួន", _firstNameController, TextInputType.text, TextInputAction.next, phoneNumberFocusNode, "Please enter your first name"),
@@ -172,7 +172,41 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                     SizedBox(height: 16),
                     _buildDatePicker("ថ្ងៃខែឆ្នាំកំណើត", _dateController, _pickDate, "Please pick your date of birth"),
                     SizedBox(height: 16),
-                    _buildTextField("អ៊ីម៉ែល", _emailController, TextInputType.emailAddress, TextInputAction.next, phoneNumberFocusNode, "Please enter valid email", validator: isValidEmail),
+                   // _buildTextField("អ៊ីម៉ែល", _emailController, TextInputType.emailAddress, TextInputAction.next, phoneNumberFocusNode, "Please enter valid email", validator: isValidEmail),
+                    //Todo: email
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("អុីម៉ែល (លើកលែង)", style: textStyleMedium),
+                        SizedBox(height: 8),
+                        SizedBox(
+                          height: 60,
+                          child: TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (value) => emailFocusNode.requestFocus(),
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.person),
+                              hintText: 'បញ្ចូលអុីម៉ែលរបស់អ្នក',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return null; // Allow empty email
+                              }
+                              if (!isValidEmail(value)) {
+                                return "Please enter valid email";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 16),
                     _buildPasswordField("ពាក្យសម្ងាត់", _passwordController, obscureText, () => setState(() => obscureText = !obscureText), "ពាក្យសម្ងាត់ត្រូវមានច្រើនជាង 9 តួអក្សរ"),
                     SizedBox(height: 16),

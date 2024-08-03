@@ -54,7 +54,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => BookStoreController(bookStoreRepository: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => CourseController(courseRepository: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeController(homeRepository: Get.find(), sharedPreferences: Get.find()));
-  Get.lazyPut(() => GetBookingRequestController(getBookingRequest: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => GetBookingRequestController(getBookingRequestController: Get.find(), sharedPreferences: Get.find()));
 
 
   // Retrieving localized data

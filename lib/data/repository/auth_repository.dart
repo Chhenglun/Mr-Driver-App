@@ -76,7 +76,8 @@ class AuthRepository {
       if(drivingLicense != null){
         files.add(MultipartBody('driving_license', drivingLicense));
       }
-      final response = await dioClient.postMultipartData(AppConstants.registerDriver,
+      final response = await dioClient.postMultipartData(
+          AppConstants.registerDriver,
           {
             "first_name": firstName,
             "last_name": lastName,
@@ -85,7 +86,12 @@ class AuthRepository {
             "phone_number": phoneNumber,
             "date_of_birth": dateOfBirth,
             "gender": gender,
-          }, files);
+          },
+          files,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+      );
       return response;
     }catch(e){
       throw e.toString();
@@ -139,10 +145,11 @@ class AuthRepository {
     }
   }
   //Todo: LoginDriver
-  Future<Response> loginWithEmailNew(String email , String password, BuildContext context) async {
+  Future<Response> loginWithEmailNew(String email,String phoneNumber , String password, BuildContext context) async {
     try {
       Response response = await dioClient.postData(AppConstants.loginUrlNew, {
         'email': email,
+        'phone_number': phoneNumber,
         'password': password,
       });
       return response;
