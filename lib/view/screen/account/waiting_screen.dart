@@ -1,10 +1,11 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
+import 'package:scholarar/util/next_screen.dart';
+import '../booking/open_booking.dart';
 
 class WaitingScreen extends StatefulWidget {
   const WaitingScreen({super.key});
@@ -15,22 +16,33 @@ class WaitingScreen extends StatefulWidget {
 
 class _WaitingScreenState extends State<WaitingScreen> {
   bool isLoading = false;
-  /* AuthController _authController = Get.find<AuthController>();
+  AuthController authController = Get.find<AuthController>();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    init();
+    checkUserStatus();
   }
-  init(){
+
+  void checkUserStatus() async {
     setState(() {
       isLoading = true;
-      _authController.refreshScreen();
     });
 
-
-  }*/
+    try {
+      await authController.getDriverProfileController();
+      String userApprove = authController.userDriverMap?["userDetails"]["status_register"] ?? '';
+      if (userApprove == "approved") {
+        nextScreenReplace(context, OpenBooking());
+      }
+    } catch (e) {
+      print("Error: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,20 +51,15 @@ class _WaitingScreenState extends State<WaitingScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: ColorResources.primaryColor,
-        /* leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: Colors.white),
-        onPressed: () {
-          Get.back();
-        },
-      ),*/
         title: Text("Waiting for verification", style: TextStyle(color: Colors.white)),
         actions: [
-          IconButton(onPressed: (){
-            setState(() {
-              isLoading = true;
-            },);
-
-          }, icon: FaIcon(FontAwesomeIcons.refresh), color: Colors.white)
+          IconButton(
+            onPressed: () {
+              checkUserStatus();
+            },
+            icon: FaIcon(FontAwesomeIcons.refresh),
+            color: Colors.white,
+          )
         ],
       ),
       body: Align(
@@ -74,15 +81,16 @@ class _WaitingScreenState extends State<WaitingScreen> {
               ),
               SizedBox(height: 32),
               Text(
-                "Thanks for your register!  We will verify your account soon.",
+                "Thanks for your registration! We will verify your account soon.",
                 style: TextStyle(fontSize: 20, color: ColorResources.primaryColor, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 16),
               Text("Please wait..."),
               SizedBox(height: 16),
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(ColorResources.primaryColor),
-              ),
+              if (isLoading)
+                CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(ColorResources.primaryColor),
+                ),
             ],
           ),
         ),
