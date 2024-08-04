@@ -304,8 +304,8 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
-  //Todo : LoginWithEmailNew
-  Future loginWithEmailNew(BuildContext context,
+  //Todo : LoginWithDriver
+  Future loginWithDriver(BuildContext context,
       {String? email, String? phoneNumber, required String password}) async {
     loadingDialogs(Get.context!);
     try {
@@ -494,7 +494,7 @@ class AuthController extends GetxController implements GetxService {
         await _tokenHelper.saveToken(token: token).then((_) async {
          // nextScreen(Get.context!, SplashScreen());
           if(map["driver"]["status_register"] == "waiting") {
-            nextScreen(Get.context!, WaitingScreen());
+            nextScreenNoReturn(Get.context!, WaitingScreen());
           }else {
             nextScreenNoReturn(Get.context!, SplashScreen());
           }

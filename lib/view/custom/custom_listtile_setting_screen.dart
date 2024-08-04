@@ -59,11 +59,11 @@ class CustomListWidget {
         ),
       ),
       titleAlignment: ListTileTitleAlignment.center,
-      trailing: IconButton(
-        icon: Icon(Icons.edit , color: Colors.blueGrey, size: 20,),
-        color: ColorResources.primaryColor,
-        onPressed: () => onPress(),
-      ),
+      // trailing: IconButton(
+      //   icon: Icon(Icons.edit , color: Colors.blueGrey, size: 20,),
+      //   color: ColorResources.primaryColor,
+      //   onPressed: () => onPress(),
+      // ),
       onTap: () => onPress(),
     );
   }

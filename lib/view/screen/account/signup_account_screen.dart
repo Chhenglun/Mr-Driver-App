@@ -259,12 +259,12 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Already have an account?'),
+                        Text('មានគណនីរួចហេីយ?'),
                         TextButton(
                           onPressed: () {
                             Get.back();
                           },
-                          child: Text('Sign In'),
+                          child: Text('ចូលគណនី'),
                         ),
                       ],
                     ),

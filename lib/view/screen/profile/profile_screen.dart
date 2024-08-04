@@ -161,7 +161,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           //write me center left
                           Positioned(
                             top: 50,  // Adjust the vertical position as needed
-                            left: (Get.width / 2) - 90,  // 50 is half the width of the image
                             child: _buildImageProfile(authController),
                           ),
                         ],
@@ -181,76 +180,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildImageProfile(AuthController authController) {
     var userNextDetails = authController.userDriverMap?['userDetails'];
     var userDetails = authController.userDriverMap;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _image == null
-            ? Container(
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(urlImagProfile),
-              fit: BoxFit.cover,
-            ),
-          ),
-        )
-            : CircleAvatar(
-          backgroundImage: Image.file(
-            File(_image!.path),
-          ).image,
-          radius: 50,
-        ),
-        TextButton.icon(
-          onPressed: () {
-            Get.dialog(
-              AlertDialog(
-                title: Text(
-                  'ជ្រើសរើសរូបភាព',
-                  style:
-                  TextStyle(color: ColorResources.primaryColor),
-                ),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Divider(),
-                      TextButton.icon(
-                        onPressed: () {
-                          pickImage(ImageSource.gallery);
-                          Get.back();
-                        },
-                        icon: Icon(Icons.photo),
-                        label: Text("ជ្រើសរើសពីរូបភាព",style: TextStyle(color: ColorResources.blackColor),),
-                      ),
-                      Padding(padding: EdgeInsets.all(8.0)),
-                      TextButton.icon(
-                        onPressed: () {
-                          pickImage(ImageSource.camera);
-                          Get.back();
-                        },
-                        icon: Icon(Icons.camera_alt_outlined),
-                        label: Text("បើកកាមេរ៉ា" , style: TextStyle(color: ColorResources.blackColor),),
-                      )
-                    ],
-                  ),
-                ),
+    return Container(
+      padding: EdgeInsets.only(right: 20),
+      alignment: Alignment.center,
+      width: Get.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _image == null
+              ? Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(urlImagProfile),
+                fit: BoxFit.cover,
               ),
-            );
-          },
-          icon: Icon(Icons.camera_alt_outlined),
-          label: Text(
-            'កែប្រែរូបភាព',
-            style: TextStyle(
-              color: ColorResources.primaryColor,
-              fontSize: 16,
             ),
+          )
+              : CircleAvatar(
+            backgroundImage: Image.file(
+              File(_image!.path),
+            ).image,
+            radius: 50,
           ),
-        ),
-      ],
+        ],
+      ),
     );
 
   }
@@ -260,7 +217,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var userDetails = authController.userDriverMap;
     final idCardImage = userDetails?['id_card_image'];
     final drivingLicenseImage = userDetails?['driving_license_image'];
-
     final idCardImageUrl = baseUrl + ("/$idCardImage");
     final drivingLicenseImageUrl = baseUrl + ("/$drivingLicenseImage");
     print('ID Card Image URL: $idCardImageUrl');
@@ -281,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           height: Get.height,
           child: Column(
             children: [
-              SizedBox(height: 90),
+              SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

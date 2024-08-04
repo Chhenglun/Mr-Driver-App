@@ -46,7 +46,7 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
     final isValid = _form.currentState!.validate();
     if (isValid) {
       _form.currentState!.save();
-      authController.loginWithEmailNew(
+      authController.loginWithDriver(
         context,
         email: isValidEmail(_emailPhoneController.text)
             ? _emailPhoneController.text
@@ -224,12 +224,12 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text('Don\'t have an account?'),
+                            Text('មិនទាន់មានគណនី?'),
                             TextButton(
                               onPressed: () {
                                 nextScreen(context, SignUpAccountScreen());
                               },
-                              child: Text('ចុះឈ្ម៖គណនី'),
+                              child: Text('ចុះឈ្មោះគណនី'),
                             ),
                           ],
                         )

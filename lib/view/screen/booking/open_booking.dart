@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'dart:ui' as ui;
+import 'package:image/image.dart' as img;
+import 'dart:typed_data';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -32,14 +37,64 @@ class _OpenBookingState extends State<OpenBooking> {
   bool locationFetched = false;
   LatLng currentPosition = const LatLng(0,0);
   bool isLoading = false;
+  BitmapDescriptor CurrentLocationIcon = BitmapDescriptor.defaultMarker;
   //Todo: init
+  Set<Marker> _markers() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('current_location'),
+        position: currentPosition!,
+        icon: CurrentLocationIcon!,
+      ),
+    ].toSet();
+  }
   @override
   void initState() {
     setState(() {
       init();
     });
+    setCustomerMarkerIcon();
+    _addCurrentLocationMarker();
     super.initState();
     _checkLocationPermissions();
+  }
+
+  void _addCurrentLocationMarker() {
+    if (CurrentLocationIcon != null && currentPosition != null) {
+      setState(() {
+        _markers().add(
+          Marker(
+            markerId: MarkerId('current_location'),
+            position: currentPosition!,
+            icon: CurrentLocationIcon!,
+          ),
+        );
+      });
+    }
+  }
+  void setCustomerMarkerIcon() async {
+    final ByteData byteData =
+    await rootBundle.load('assets/icons/user_icon.jpg');
+    final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
+
+    // Resize the image
+    final img.Image resizedImage =
+    img.copyResize(image!, width: 120, height: 120);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      img.encodePng(resizedImage).buffer.asUint8List(),
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    final ByteData? resizedByteData =
+    await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
+
+    final BitmapDescriptor icon =
+    await BitmapDescriptor.fromBytes(resizedUint8List!);
+    setState(() {
+      CurrentLocationIcon = icon;
+    });
   }
 
   Future<void> init() async {
@@ -99,7 +154,6 @@ class _OpenBookingState extends State<OpenBooking> {
     var userNextDetails = authController.userDriverMap?['userDetails'];
     var userIDInfo = bookingController.driverIDList;
     return Scaffold(
-
       body: Stack(
         alignment: Alignment.bottomCenter,
         children:[
@@ -111,9 +165,8 @@ class _OpenBookingState extends State<OpenBooking> {
                 controller.animateCamera(CameraUpdate.newLatLng(currentPosition));
               }
             },
-            markers: {
-              Marker(markerId: const MarkerId("current Position"), position: currentPosition,)
-            },
+            markers: _markers(),
+
             // myLocationButtonEnabled: true,
           ),
           Stack(
@@ -152,7 +205,7 @@ class _OpenBookingState extends State<OpenBooking> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("អ្នកកំពងប្រេីប្រាស់កម្មវិធី",style: TextStyle(color: Colors.black,fontSize: 20),),
+                            const Text("អ្នកកំពុងប្រេីប្រាស់កម្មវិធី",style: TextStyle(color: Colors.black,fontSize: 20),),
                             const SizedBox(height: 16,),
                             Text("សូមបើកការកក់របស់អ្នក....",style: TextStyle(color: Colors.black,fontSize: 16),),
                             SizedBox(height: 16,),
@@ -180,7 +233,7 @@ class _OpenBookingState extends State<OpenBooking> {
                                   bookingController.updateToken(deviceToken, driverId);
                                   isLoading = true;
                                   //customShowSnackBar('ការបើកការកក់របស់អ្នកទទួលបានជោគជ័យ', context, isError: false);
-                                  nextScreen(context, BookingScreen());
+                                  nextScreen(context, CloseBooking());
                                 } else {
                                   customShowSnackBar('Device token or driver ID is missing', context, isError: true);
 

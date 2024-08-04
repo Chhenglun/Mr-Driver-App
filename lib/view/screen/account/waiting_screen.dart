@@ -51,7 +51,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: ColorResources.primaryColor,
-        title: Text("Waiting for verification", style: TextStyle(color: Colors.white)),
+        title: Text("សូមមេត្តារង់ចាំការយល់ព្រមពីក្រុមការងារ", style: TextStyle(color: Colors.white,fontSize: 16)),
         actions: [
           IconButton(
             onPressed: () {
@@ -81,15 +81,20 @@ class _WaitingScreenState extends State<WaitingScreen> {
               ),
               SizedBox(height: 32),
               Text(
-                "Thanks for your registration! We will verify your account soon.",
-                style: TextStyle(fontSize: 20, color: ColorResources.primaryColor, fontWeight: FontWeight.bold),
+                "សូមអរគុណសម្រាប់ការចុះឈ្មោះ",
+                style: TextStyle(fontSize: 20, color: ColorResources.primaryColor, ),
+              ),
+              SizedBox(height: 8,),
+              Text(
+                "ពួកយេីងនឹងផ្ទៀងផ្ទាត់គណនីរបស់អ្នក",
+                style: TextStyle(fontSize: 20, color: ColorResources.primaryColor,),
               ),
               SizedBox(height: 16),
-              Text("Please wait..."),
+              Text("សូមមេត្តារង់ចាំ...",style: TextStyle(fontSize: 16,color: ColorResources.blackColor),),
               SizedBox(height: 16),
               if (isLoading)
                 CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(ColorResources.primaryColor),
+                  valueColor: AlwaysStoppedAnimation<Color>(ColorResources.primaryColor,),
                 ),
             ],
           ),

@@ -2,6 +2,10 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:ui' as ui;
+import 'package:image/image.dart' as img;
+import 'dart:typed_data';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,7 +29,41 @@ class _CloseBookingState extends State<CloseBooking> {
   bool isLoading = true;
   GetBookingRequestController getBookingRequestController = Get.find<GetBookingRequestController>();
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  BitmapDescriptor CurrentLocationIcon = BitmapDescriptor.defaultMarker;
 
+  Set<Marker> _markers() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('current_location'),
+        position: currentPosition!,
+        icon: CurrentLocationIcon!,
+      ),
+    ].toSet();
+  }
+  void setCustomerMarkerIcon() async {
+    final ByteData byteData =
+    await rootBundle.load('assets/icons/user_icon.jpg');
+    final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
+
+    // Resize the image
+    final img.Image resizedImage =
+    img.copyResize(image!, width: 120, height: 120);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      img.encodePng(resizedImage).buffer.asUint8List(),
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    final ByteData? resizedByteData =
+    await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
+
+    final BitmapDescriptor icon =
+    await BitmapDescriptor.fromBytes(resizedUint8List!);
+    setState(() {
+      CurrentLocationIcon = icon;
+    });
+  }
   init() async {
     await getBookingRequestController.getRequest();
     setState(() {
@@ -68,6 +106,7 @@ class _CloseBookingState extends State<CloseBooking> {
     _checkLocationPermissions();
     init();
     _configureFirebaseListeners();
+    setCustomerMarkerIcon();
   }
   void _checkLocationPermissions() async {
     bool serviceEnabled;
@@ -123,9 +162,7 @@ class _CloseBookingState extends State<CloseBooking> {
                   controller.animateCamera(CameraUpdate.newLatLng(currentPosition));
                 }
               },
-              markers: {
-                Marker(markerId: const MarkerId("current Position"), position: currentPosition)
-              },
+              markers: _markers()
               // myLocationButtonEnabled: true,
             ),
             Column(
