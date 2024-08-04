@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/style.dart';
@@ -30,6 +34,41 @@ class _EditeProfileScreenState extends State<EditeProfileScreen> {
   bool obscureText = true;
   var enterPassword = "";
   var enterPhone = "";
+  XFile? _imageDriverID;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> pickImageID(ImageSource source) async {
+    final XFile? selectedImage = await _picker.pickImage(source: source);
+    setState(() {
+      if (selectedImage != null) {
+        _imageDriverID = selectedImage;
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+  XFile? _imageDriverLicense;
+  Future<void> pickImageDriverLicense(ImageSource source) async {
+    final XFile? selectedImage = await _picker.pickImage(source: source);
+    setState(() {
+      if (selectedImage != null) {
+        _imageDriverLicense = selectedImage;
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+  XFile? _imageProfile;
+  Future<void> pickImageProfille(ImageSource source) async {
+    final XFile? selectedImage = await _picker.pickImage(source: source);
+    setState(() {
+      if (selectedImage != null) {
+        _imageProfile = selectedImage;
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
   //Todo: isValidEmail
   bool isValidEmail(String email) {
     final RegExp regex =
@@ -149,6 +188,12 @@ class _EditeProfileScreenState extends State<EditeProfileScreen> {
                     _buildTextField("លេខសម្ងាត់ចាស់", "លេខសម្ងាត់ចាស់", _oldPasswordController, TextInputType.text, TextInputAction.next, passwordFocusNode, "Please enter your old password", minLength: 6),
                     SizedBox(height: 16),
                     _buildTextField("លេខសម្ងាត់ថ្មី", "លេខសម្ងាត់ថ្មី", _newPasswordController, TextInputType.text, TextInputAction.done, passwordFocusNode, "Please enter your new password", minLength: 6),
+                    SizedBox(height: 16),
+                    _buildImagePicker("អត្តសញ្ញាណប័ណ្ណ", _imageDriverID, pickImageID),
+                    SizedBox(height: 16),
+                    _buildImagePicker("ប័ណ្ណបេីកបរ", _imageDriverLicense, pickImageDriverLicense),
+                    SizedBox(height: 16),
+                    _buildImagePicker("កែប្រែរូបតំណាង", _imageProfile, pickImageProfille),
                     /*  Row(
                       children: [
                         Checkbox(
@@ -307,6 +352,74 @@ class _EditeProfileScreenState extends State<EditeProfileScreen> {
           // },
         ),
       ],
+    );
+  }
+  //Todo: buildImagePicker
+  Widget _buildImagePicker(String label, XFile? image, Function onTap) {
+    return image == null
+        ? InkWell(
+      onTap: () => onTap(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: textStyleMedium),
+          SizedBox(height: 8),
+          Container(
+            width: Get.width,
+            height: 200,
+            decoration: BoxDecoration(
+              color: ColorResources.backgroundBannerColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () => onTap(ImageSource.gallery),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.photo),
+                        SizedBox(height: 8),
+                        Text('ជ្រើសរើសរូបភាព'),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Divider(height: 1, color: ColorResources.greyColor),
+                  SizedBox(height: 16),
+                  InkWell(
+                    onTap: () => onTap(ImageSource.camera),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.camera_alt),
+                        SizedBox(height: 8),
+                        Text('បើកកាមេរ៉ា'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    )
+        : Container(
+      width: Get.width,
+      height: 200,
+      decoration: BoxDecoration(
+        color: ColorResources.backgroundBannerColor,
+        borderRadius: BorderRadius.circular(8),
+        image: DecorationImage(
+          image: FileImage(File(image.path)),
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 }

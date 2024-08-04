@@ -140,7 +140,6 @@ class _SettingScreenState extends State<SettingScreen> {
                           //Todo: ImageProfile
                           Positioned(
                             top: 50,  // Adjust the vertical position as needed
-                            left: (Get.width / 2) - 120,  // 50 is half the width of the image
                             child: _buildImageProfile(authController),
                           ),
                         ],
@@ -159,81 +158,86 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget _buildImageProfile(AuthController authController) {
     var userNextDetails = authController.userDriverMap?['userDetails'];
     var userDetails = authController.userDriverMap;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _image == null
-            ? Container(
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: CachedNetworkImageProvider(urlImagProfile),
-              fit: BoxFit.cover,
-            ),
-          ),
-        )
-            : CircleAvatar(
-          backgroundImage: Image.file(
-            File(_image!.path),
-          ).image,
-          radius: 50,
-        ),
-        Text(
-          // when get first_name success show it as UPPER CASE
-          authController.userDriverMap?['userDetails']['first_name'].toString().toUpperCase()  ?? "Username",
-          style: TextStyle(color: ColorResources.primaryColor, fontSize: 16),
-        ),
-        TextButton.icon(
-          onPressed: () {
-            Get.dialog(
-              AlertDialog(
-                title: Text(
-                  'ជ្រើសរើសរូបភាព',
-                  style:
-                  TextStyle(color: ColorResources.primaryColor),
-                ),
-                content: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Divider(),
-                      TextButton.icon(
-                        onPressed: () {
-                          pickImage(ImageSource.gallery);
-                          Get.back();
-                        },
-                        icon: Icon(Icons.photo),
-                        label: Text("ជ្រើសរើសរូបភាព" , style: TextStyle(color: ColorResources.blackColor)),
-                      ),
-                      Padding(padding: EdgeInsets.all(8.0)),
-                      TextButton.icon(
-                        onPressed: () {
-                          pickImage(ImageSource.camera);
-                          Get.back();
-                        },
-                        icon: Icon(Icons.camera_alt_outlined),
-                        label: Text("បើកកាមេរ៉ា", style: TextStyle(color: ColorResources.blackColor)),
-                      )
-                    ],
-                  ),
-                ),
+    return Container(
+      padding: EdgeInsets.only(right: 20),
+      alignment: Alignment.center,
+      width: Get.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _image == null
+              ? Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(urlImagProfile),
+                fit: BoxFit.cover,
               ),
-            );
-          },
-          icon: Icon(Icons.camera_alt_outlined),
-          label: Text(
-            'កែប្រែរូបភាព',
-            style: TextStyle(
-              color: ColorResources.primaryColor,
-              fontSize: 16,
             ),
+          )
+              : CircleAvatar(
+            backgroundImage: Image.file(
+              File(_image!.path),
+            ).image,
+            radius: 50,
           ),
-        ),
-      ],
+          Text(
+            // when get first_name success show it as UPPER CASE
+            authController.userDriverMap?['userDetails']['first_name'].toString().toUpperCase()  ?? "Username",
+            style: TextStyle(color: ColorResources.primaryColor, fontSize: 16),
+          ),
+          // TextButton.icon(
+          //   onPressed: () {
+          //     Get.dialog(
+          //       AlertDialog(
+          //         title: Text(
+          //           'ជ្រើសរើសរូបភាព',
+          //           style:
+          //           TextStyle(color: ColorResources.primaryColor),
+          //         ),
+          //         content: SingleChildScrollView(
+          //           child: Column(
+          //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //             crossAxisAlignment: CrossAxisAlignment.start,
+          //             children: <Widget>[
+          //               Divider(),
+          //               TextButton.icon(
+          //                 onPressed: () {
+          //                   pickImage(ImageSource.gallery);
+          //                   Get.back();
+          //                 },
+          //                 icon: Icon(Icons.photo),
+          //                 label: Text("ជ្រើសរើសរូបភាព" , style: TextStyle(color: ColorResources.blackColor)),
+          //               ),
+          //               Padding(padding: EdgeInsets.all(8.0)),
+          //               TextButton.icon(
+          //                 onPressed: () {
+          //                   pickImage(ImageSource.camera);
+          //                   Get.back();
+          //                 },
+          //                 icon: Icon(Icons.camera_alt_outlined),
+          //                 label: Text("បើកកាមេរ៉ា", style: TextStyle(color: ColorResources.blackColor)),
+          //               )
+          //             ],
+          //           ),
+          //         ),
+          //       ),
+          //     );
+          //   },
+          //   icon: Icon(Icons.camera_alt_outlined),
+          //   label: Text(
+          //     'កែប្រែរូបភាព',
+          //     style: TextStyle(
+          //       color: ColorResources.primaryColor,
+          //       fontSize: 16,
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
     );
 
   }
@@ -256,7 +260,7 @@ class _SettingScreenState extends State<SettingScreen> {
           height: Get.height,
           child: Column(
             children: [
-              SizedBox(height: 110),
+              SizedBox(height: 80),
               // Todo: ListTile of Profile
               Expanded(
                 child: SingleChildScrollView(
@@ -299,7 +303,6 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
               )
-
             ],
           ),
         ),
@@ -322,7 +325,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     Row(
                       children: [
                         Text(
-                          "Log Out ",
+                          "ចាកចេញ",
                           style: textStyleMedium.copyWith(
                               color: ColorResources.blackColor,
                               fontSize: 20),
@@ -346,14 +349,15 @@ class _SettingScreenState extends State<SettingScreen> {
                       size: 60,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
                           padding:
                           EdgeInsets.symmetric(vertical: 8.0),
                           child: Text(
-                            'Are you sure, you wish to log Out?',
+                            'តេីអ្នកប្រាកដឬទេថាចង់ចាកចេញ?',
                             style: textStyleMedium.copyWith(
-                                fontSize: 12),
+                                fontSize: 14),
                           ),
                         ),
                       ],
@@ -381,13 +385,13 @@ class _SettingScreenState extends State<SettingScreen> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 8.0,
-                                horizontal: 32,
+                                horizontal: 26,
                               ),
                               child: Text(
-                                'Close',
+                                'ថយក្រោយ',
                                 style: TextStyle(
                                   color: ColorResources
-                                      .whiteBackgroundColor,
+                                      .blackColor,
                                 ),
                               ),
                             )),
@@ -402,18 +406,17 @@ class _SettingScreenState extends State<SettingScreen> {
                             borderRadius: BorderRadius.all(
                               Radius.circular(16),
                             ),
-                            color: ColorResources.primaryColor
-                                .withOpacity(0.5),
+                            color: ColorResources.primaryColor,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               vertical: 8.0,
-                              horizontal: 32,
+                              horizontal: 30,
                             ),
                             child: Text(
-                              'Log Out',
+                              'ចាកចេញ',
                               style: TextStyle(
-                                color: ColorResources.redColor,
+                                color: ColorResources.whiteColor,
                               ),
                             ),
                           ),
@@ -434,7 +437,7 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
             SizedBox(width: 16),
             Text(
-              'Log Out',
+              'ចាកចេញ',
               style: TextStyle(
                 color: ColorResources.primaryColor,
                 fontSize: 16,

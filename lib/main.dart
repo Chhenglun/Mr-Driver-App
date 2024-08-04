@@ -40,6 +40,7 @@ Future<void> main(context) async {
       return true;
     };
   }
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await di.init();
   HttpOverrides.global = MyHttpOverrides();

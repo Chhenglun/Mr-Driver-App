@@ -2,11 +2,15 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'dart:ui' as ui;
+import 'package:image/image.dart' as img;
+import 'dart:typed_data';
 import 'package:scholarar/view/screen/booking/arrive_location.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -26,6 +30,9 @@ class _BookingScreenState extends State<BookingScreen> {
   String url = "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
   Timer? driverTimer;
   bool isLoading = true;
+  BitmapDescriptor CurrentIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor DestinationIcon = BitmapDescriptor.defaultMarker;
+
   Future<void> init() async {
     setState(() {
       isLoading = false;
@@ -37,8 +44,63 @@ class _BookingScreenState extends State<BookingScreen> {
       init();
       _checkLocationPermissions();
     });
+    setCurrentIcon();
+    setDestinationIcon();
     super.initState();
+  }
+  Set<Marker> _markers() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('current_location'),
+        position: currentPosition,
+        icon: CurrentIcon!,
+      ),
+      Marker(
+        markerId: MarkerId('current_location'),
+        position: destination,
+        icon: DestinationIcon!,
+      ),
+    ].toSet();
+  }
+  void setCurrentIcon() async {
+    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
+    final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
+    // Resize the image
+    final img.Image resizedImage = img.copyResize(image!, width: 120, height: 120);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      img.encodePng(resizedImage).buffer.asUint8List(),
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
+
+    final BitmapDescriptor Currenticon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    setState(() {
+      CurrentIcon = Currenticon;
+    });
+  }
+  void setDestinationIcon() async {
+    final ByteData byteData = await rootBundle.load('assets/icons/driver_pin_map.jpg');
+    final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
+
+    // Resize the image
+    final img.Image resizedImage = img.copyResize(image!, width: 100, height: 150);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(
+      img.encodePng(resizedImage).buffer.asUint8List(),
+    );
+    final ui.FrameInfo frameInfo = await codec.getNextFrame();
+
+    final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
+
+    final BitmapDescriptor destinationIcon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    setState(() {
+      DestinationIcon = destinationIcon;
+    });
   }
   /*@override
   void initState() {
@@ -176,17 +238,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   width: 6,
                 )
               },
-              markers: {
-                Marker(
-                  markerId: MarkerId("user"),
-                  position: currentPosition,
-                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-                ),
-                Marker(
-                  markerId: MarkerId("destination"),
-                  position: destination,
-                ),
-              },
+              markers: _markers()
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
