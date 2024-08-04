@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:scholarar/util/color_resources.dart';
 
 // Todo : CustomNotificationDialog
-Future customNotificationDialog({required BuildContext context,required String title,required String username, void Function()? onTap}) async {
+Future customNotificationDialog({required BuildContext context,required String title,required String body, void Function()? onTap}) async {
   return showDialog(
     context: context,
     builder: (context) {
@@ -51,9 +51,16 @@ Future customNotificationDialog({required BuildContext context,required String t
                       child: Icon(Icons.person, color: Colors.black, size: 45),
                     ),
                     SizedBox(width: 20),
-                    Text(
-                      username,
-                      style: TextStyle(fontSize: 18, color: ColorResources.whiteColor,wordSpacing: 1.5),),
+                    //check condition that if word text have more than 3 word please allow \n
+                    Expanded(
+                      child: Text(
+                        textAlign: TextAlign.justify,
+                        body,
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: ColorResources.whiteColor,
+                            wordSpacing: 1.5),),
+                    ),
                     /*Column(
                       children: [
                         Text(username, style: TextStyle(fontSize: 18, color: ColorResources.whiteColor,),),

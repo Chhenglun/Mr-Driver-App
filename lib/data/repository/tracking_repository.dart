@@ -9,6 +9,7 @@ class TrackingRepository {
 
   TrackingRepository({required this.dioClient, required this.sharedPreferences});
 
+
   Future getTracking() async {
     try {
       final response = await dioClient.getData(AppConstants.google_key_api);

@@ -99,7 +99,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             customNotificationDialog(
               context: Get.context!,
               title: message.notification!.title!,
-              username: message.notification!.body!,
+              body: message.notification!.body!,
               onTap: () {
                 Get.back();
                 FlutterAppBadger.removeBadge();

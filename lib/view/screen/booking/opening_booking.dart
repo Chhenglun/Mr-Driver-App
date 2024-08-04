@@ -6,12 +6,10 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/controller/get_booking_request.dart';
-import 'package:scholarar/util/app_constants.dart';
+import 'package:scholarar/util/alert_dialog.dart';
 import 'package:scholarar/util/firebase_api.dart';
-import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
-import 'package:scholarar/view/screen/booking/open_booking.dart';
-import 'package:shared_preferences/shared_preferences.dart';// Import the file where frmTokenPublic is defined
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OpeningBooking extends StatefulWidget {
   const OpeningBooking({super.key});
@@ -26,10 +24,20 @@ class _OpeningBookingState extends State<OpeningBooking> {
   final GetBookingRequestController bookingController = Get.find<GetBookingRequestController>();
   final Completer<GoogleMapController> _controller = Completer();
   bool locationFetched = false;
-  LatLng currentPosition = const LatLng(0,0);
+  LatLng currentPosition = const LatLng(0, 0);
   bool isLoading = true;
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FirebaseAPI _firebaseAPI = FirebaseAPI();
+  String? _tripID; // To store the tripID
+  bool isDialogVisible = false; // To track dialog visibility
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLocationPermissions();
+    init();
+    _configureFirebaseListeners();
+  }
 
   init() async {
     await bookingController.getRequest();
@@ -42,39 +50,66 @@ class _OpeningBookingState extends State<OpeningBooking> {
 
   void _configureFirebaseListeners() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _showAlertDialog(context, message.notification?.title, message.notification?.body);
+      print('onMessage received');
+      if (message.data.containsKey('tripId')) {
+        setState(() {
+          _tripID = message.data['tripId'];
+        });
+        print('Received tripID: $_tripID');
+        if (!isDialogVisible) {
+          _showCustomNotificationDialog(context, message.data['title'], message.data['body']);
+        }
+      }
     });
 
-   /* FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _showAlertDialog(context, message.notification?.title, message.notification?.body);
-    });*/
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('onMessageOpenedApp received');
+      if (message.data.containsKey('tripId')) {
+        setState(() {
+          _tripID = message.data['tripId'];
+        });
+        print('Received tripID: $_tripID');
+        if (!isDialogVisible) {
+          _showCustomNotificationDialog(context, message.data['title'], message.data['body']);
+        }
+      }
+    });
   }
 
-  void _showAlertDialog(BuildContext context, String? title, String? body) {
-    showDialog(
+  Future<void> _showCustomNotificationDialog(BuildContext context, String? title, String? body) async {
+    isDialogVisible = true;
+    await customNotificationDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title ?? 'Notification'),
-          content: Text(body ?? 'You have a new notification'),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+      title: title ?? 'Notification',
+      body: body ?? 'You have a new notification',
+      onTap: () {
+        Navigator.of(context).pop();
+        setState(() {
+          isDialogVisible = false;
+        });
+        String driverId = authController.userDriverMap?['userDetails']['_id'];
+        print("driverId : $driverId");
+        if (driverId != null && _tripID != null) {
+          setState(() {
+            isLoading = true;
+            isDialogVisible = false;
+          });
+          List<double> location = [currentPosition.longitude, currentPosition.latitude];
+          bookingController.acceptBooking(driverId, _tripID! ,location);
+          bookingController.deleteDeviceToken(driverId);
+
+        } else {
+          customShowSnackBar('Driver ID is missing', context, isError: true);
+          setState(() {
+            isDialogVisible = false;
+          });
+        }
       },
-    );
-  }
-  @override
-  void initState() {
-    super.initState();
-    _checkLocationPermissions();
-    init();
-    _configureFirebaseListeners();
+    ).then((_) {
+      setState(() {
+        isDialogVisible = false;
+      });
+    });
   }
 
   void _checkLocationPermissions() async {
@@ -175,8 +210,11 @@ class _OpeningBookingState extends State<OpeningBooking> {
                               print("driverId : $driverId");
                               if (driverId != null) {
                                 bookingController.deleteDeviceToken(driverId);
-                                isLoading = true;
-                                nextScreen(context, OpenBooking());
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                List<double> location = [currentPosition.longitude, currentPosition.latitude];
+                                await bookingController.acceptBooking(driverId, _tripID! ,location.toList());
                               } else {
                                 customShowSnackBar('Driver ID is missing', context, isError: true);
                               }

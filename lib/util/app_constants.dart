@@ -19,6 +19,8 @@ class AppConstants {
   static const String deleteToken = "/api/trips/resetFCMToken";
   //static const String getTripID = "/api/trips/available";
   static const String acceptTrip = "/api/trips/accept";
+  //here how to get trip id
+  static const String getTripInfo = "/api/trips/{trip_id}";
   //old project
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";

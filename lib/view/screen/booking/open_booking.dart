@@ -201,7 +201,7 @@ class _OpenBookingState extends State<OpenBooking> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("អ្នកកំពងប្រេីប្រាស់កម្មវិធី", style: TextStyle(color: Colors.black, fontSize: 20)),
+                          const Text("អ្នកកំពុងប្រេីប្រាស់កម្មវិធី", style: TextStyle(color: Colors.black, fontSize: 20)),
                           const SizedBox(height: 16),
                           Text("សូមបើកការកក់របស់អ្នក....", style: TextStyle(color: Colors.black, fontSize: 16)),
                           SizedBox(height: 16),

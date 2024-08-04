@@ -221,7 +221,7 @@ class _CloseBookingState extends State<CloseBooking> {
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red[500]),
                                 onPressed: () {
-                                  nextScreen(context, BookingScreen());
+                                  nextScreen(context, TrackingScreen());
                                 },
                                 child: Container(
                                   alignment: Alignment.center,

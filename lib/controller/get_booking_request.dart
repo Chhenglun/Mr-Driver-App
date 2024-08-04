@@ -7,6 +7,8 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:scholarar/view/screen/booking/open_booking.dart';
+import 'package:scholarar/view/screen/booking/opening_booking.dart';
+import 'package:scholarar/view/screen/booking/tracking.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,12 +23,15 @@ class GetBookingRequestController extends GetxController implements GetxService 
   bool _isLoading = false;
   Map<String,dynamic>? _slideShowList;
   List<Map<String, dynamic>>? _driverIDList;
+  Map<String, dynamic>? _tripInfo;
+  String tripID = '';
   //Map<String,dynamic>? _driverIDMap;
   // List? _featuredCoursesList;
   // List? _newsList;
   // List? _carouselList;
 
   //get
+  Map<String , dynamic>? get tripInfo => _tripInfo;
   bool get isLoading => _isLoading;
   Map<String , dynamic>? get slideShowList => _slideShowList;
   List<Map<String, dynamic>>? get driverIDList => _driverIDList;
@@ -134,22 +139,26 @@ class GetBookingRequestController extends GetxController implements GetxService 
     }
   }
   //Todo: acceptBooking Controller
-  Future acceptBooking(String driverId, String tripId) async {
+  Future acceptBooking(String driverId, String tripId , List<double> location ) async {
     try {
       _isLoading = true;
       update();
-      Response apiResponse = await getBookingRequestController.acceptBooking(driverId, tripId);
+      Response apiResponse = await getBookingRequestController.acceptBooking(driverId, tripId , location);
       if (apiResponse.statusCode == 200) {
         print("Accept Booking Success: ${apiResponse.body}");
-        customShowSnackBar('ការបើកទទួលការកក់របស់អ្នកទទួលបានជោគជ័យ', Get.context!, isError: false);
+        customShowSnackBar('អ្នកបានយល់ព្រមការកក់ដោយជោគជ័យ', Get.context!, isError: false);
         Map<String, dynamic> map = apiResponse.body;
-        /*try {
+        print("Map: $map");
+        tripID = map['trip']['_id'];
+        print("Trip ID: $tripID");
+        String status = map['trip']['status'];
+        print("Status Acceptd Booking: $status");
+        if (status == 'accepted') {
+          // Fetch trip info
+          await getTripInfo(tripID);
           // Save message to local storage
-          await sharedPreferences.setString(AppConstants.message, map['message']);
-        } catch (e) {
-          print("Error: $e");
-          customShowSnackBar('An error occurred', Get.context!, isError: true);
-        }*/
+          nextScreen(Get.context!, TrackingScreen());
+        }
       } else if (apiResponse.statusCode == 404) {
         print("Driver not found");
         customShowSnackBar('Driver not found', Get.context!, isError: true);
@@ -165,30 +174,24 @@ class GetBookingRequestController extends GetxController implements GetxService 
       update();
     }
   }
-  /*//Todo: Update Token Controller
 
-  Future updateToken(String deviceToken ,String driverId) async {
+  //Todo: GetTripInfoController
+  Future getTripInfo(String tripId) async {
     try {
       _isLoading = true;
       update();
-      Response apiResponse = await getBookingRequestController.updateToken(deviceToken, driverId);
+      Response apiResponse = await getBookingRequestController.getTripInfo(tripId: tripId);
       if (apiResponse.statusCode == 200) {
-        print("Update Token Success: ${apiResponse.body}");
-        customShowSnackBar('ការបើកទទួលការកក់របស់អ្នកទទួលបានជោគជ័យ', Get.context!, isError: false);
-        Map map = apiResponse.body;
-        try {
-          //save message to local storage
-          await sharedPreferences.setString(AppConstants.message, map['message']);
-        } catch (e) {
-          print("Error: $e");
-          customShowSnackBar('An error occurred', Get.context!, isError: true);
-        }
+        print("Get Trip Info Success: ${apiResponse.body}");
+        _tripInfo = apiResponse.body;
+        customShowSnackBar('Get Trip Info Success', Get.context!, isError: false);
+        print("Trip Info: $_tripInfo");
       } else if (apiResponse.statusCode == 404) {
-        print("Driver not found");
-        customShowSnackBar('Driver not found', Get.context!, isError: true);
+        print("Trip Info not found");
+        customShowSnackBar('Trip info not found', Get.context!, isError: true);
       } else {
-        print("Error updating token: ${apiResponse.body}");
-        customShowSnackBar('Error updating token', Get.context!, isError: true);
+        print("Error getting trip info: ${apiResponse.body}");
+        customShowSnackBar('Error getting trip info', Get.context!, isError: true);
       }
     } catch (e) {
       print("Error: $e");
@@ -197,27 +200,5 @@ class GetBookingRequestController extends GetxController implements GetxService 
       _isLoading = false;
       update();
     }
-  }*/
-
-  //Todo: Get Driver ID
-  /*Future getDriverID() async {
-    try {
-      _isLoading = true;
-      update();
-      Response response = await getBookingRequestController.getDriverID();
-      if (response.statusCode == 200) {
-        List<dynamic> data = response.body;
-        _driverIDList = List<Map<String, dynamic>>.from(
-            data.map((item) => item as Map<String, dynamic>));
-        print("Get Data booking Success: $_driverIDList");
-      } else {
-        print("Error: ${response.statusCode}");
-      }
-    } catch (e) {
-      print("Error: $e");
-    } finally {
-      _isLoading = false;
-      update();
-    }
-  }*/
+  }
 }

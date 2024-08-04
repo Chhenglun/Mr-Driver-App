@@ -5,27 +5,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scholarar/controller/get_booking_request.dart';
 import 'package:scholarar/util/app_constants.dart';
+import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'dart:ui' as ui;
 import 'package:image/image.dart' as img;
 import 'dart:typed_data';
 import 'package:scholarar/view/screen/booking/arrive_location.dart';
 
-class BookingScreen extends StatefulWidget {
-  const BookingScreen({super.key});
+class TrackingScreen extends StatefulWidget {
+  const TrackingScreen({super.key});
 
   @override
-  State<BookingScreen> createState() => _BookingScreenState();
+  State<TrackingScreen> createState() => _TrackingScreenState();
 }
 
-class _BookingScreenState extends State<BookingScreen> {
+class _TrackingScreenState extends State<TrackingScreen> {
+  GetBookingRequestController bookingController = Get.find<GetBookingRequestController>();
   final Completer<GoogleMapController> _controller = Completer();
   static const LatLng destination = LatLng(11.544, 104.8112);
   List<LatLng> polyLineCoordinates = [];
   LatLng currentPosition = destination;
   LatLng driverPosition = LatLng(11.570, 104.875);
+  LatLng passengerPosition = destination; // Add passenger position
   StreamSubscription<Position>? positionStreamSubscription;
   String url = "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
   Timer? driverTimer;
@@ -34,10 +39,24 @@ class _BookingScreenState extends State<BookingScreen> {
   BitmapDescriptor DestinationIcon = BitmapDescriptor.defaultMarker;
 
   Future<void> init() async {
+    //tripInfo
+    await bookingController.getTripInfo(bookingController.tripID);
+    setPassengerPosition();
     setState(() {
       isLoading = false;
     });
   }
+
+  void setPassengerPosition() {
+    var userTripInfoDetail = bookingController.tripInfo;
+    if (userTripInfoDetail != null && userTripInfoDetail["start_location"] != null) {
+      var coordinates = userTripInfoDetail["start_location"]["coordinates"];
+      setState(() {
+        passengerPosition = LatLng(coordinates[1], coordinates[0]);
+      });
+    }
+  }
+
   @override
   void initState() {
     setState(() {
@@ -48,6 +67,7 @@ class _BookingScreenState extends State<BookingScreen> {
     setDestinationIcon();
     super.initState();
   }
+
   Set<Marker> _markers() {
     return <Marker>[
       Marker(
@@ -56,14 +76,15 @@ class _BookingScreenState extends State<BookingScreen> {
         icon: CurrentIcon!,
       ),
       Marker(
-        markerId: MarkerId('current_location'),
-        position: destination,
+        markerId: MarkerId('passenger_location'),
+        position: passengerPosition,
         icon: DestinationIcon!,
       ),
     ].toSet();
   }
+
   void setCurrentIcon() async {
-    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
+    final ByteData byteData = await rootBundle.load('assets/icons/driver_icon.jpg');
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
@@ -82,8 +103,9 @@ class _BookingScreenState extends State<BookingScreen> {
       CurrentIcon = Currenticon;
     });
   }
+
   void setDestinationIcon() async {
-    final ByteData byteData = await rootBundle.load('assets/icons/driver_pin_map.jpg');
+    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
@@ -102,13 +124,7 @@ class _BookingScreenState extends State<BookingScreen> {
       DestinationIcon = destinationIcon;
     });
   }
-  /*@override
-  void initState() {
-    super.initState();
-    isLoading = false;
-    _checkLocationPermissions();
-  }
-*/
+
   @override
   void dispose() {
     positionStreamSubscription?.cancel();
@@ -122,7 +138,7 @@ class _BookingScreenState extends State<BookingScreen> {
     // Create a PolylineRequest object with required parameters
     PolylineRequest request = PolylineRequest(
       origin: PointLatLng(currentPosition.latitude, currentPosition.longitude),
-      destination: PointLatLng(destination.latitude, destination.longitude),
+      destination: PointLatLng(passengerPosition.latitude, passengerPosition.longitude),
       mode: TravelMode.driving, // Set the mode of travel if required
     );
 
@@ -148,6 +164,7 @@ class _BookingScreenState extends State<BookingScreen> {
       print('Error occurred: $e');
     }
   }
+
   void _checkLocationPermissions() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -177,6 +194,7 @@ class _BookingScreenState extends State<BookingScreen> {
     getCurrentLocation();
     listenToPositionStream();
   }
+
   void getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition();
     setState(() {
@@ -185,6 +203,7 @@ class _BookingScreenState extends State<BookingScreen> {
       _simulateDriverMovement();
     });
   }
+
   void listenToPositionStream() {
     positionStreamSubscription = Geolocator.getPositionStream().listen((Position newPosition) {
       print('=====>>>>>>New position obtained: ${newPosition.latitude}, ${newPosition.longitude}');
@@ -217,128 +236,188 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var userTripInfoDetail = bookingController.tripInfo;
+    print("UserTripInfoDetail : $userTripInfoDetail");
     return Scaffold(
-      body: isLoading != false
+      body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Stack(
-          children: [
-            GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: currentPosition,
-                zoom: 14.5,
-              ),
-              onMapCreated: (GoogleMapController controller){
-                _controller.complete(controller);
-              },
-              polylines: {
-                Polyline(
-                  polylineId: PolylineId("route"),
-                  points: polyLineCoordinates,
-                  color: Colors.green,
-                  width: 6,
-                )
-              },
-              markers: _markers()
+        children: [
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: currentPosition,
+              zoom: 14.5,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width/2.5,
-                  margin: EdgeInsets.symmetric(horizontal: 20,vertical: 40),
-                  alignment: Alignment.topLeft,
-                  child: ElevatedButton(
-                      style: const ButtonStyle(
-                        backgroundColor:
-                        MaterialStatePropertyAll(Colors.red),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.arrow_back_ios,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            polylines: {
+              Polyline(
+                polylineId: PolylineId("route"),
+                points: polyLineCoordinates,
+                color: Colors.green,
+                width: 6,
+              )
+            },
+            markers: _markers(),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /*Container(
+                color: Colors.blue,
+                width: MediaQuery.of(context).size.width / 2.5,
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                alignment: Alignment.topLeft,
+                child: ElevatedButton(
+                    style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(Colors.red),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          'ត្រឡប់ក្រោយ',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    )),
+              ),*/
+              Spacer(),
+              Visibility(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SingleChildScrollView(
+                    child: Container(
+                        height: MediaQuery.sizeOf(context).height * 3 / 8,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
                             color: Colors.white,
-                          ),
-                          Text(
-                            'ត្រឡប់ក្រោយ',
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
-                      )),
-                ),
-                Spacer(),
-                Visibility(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                          height: MediaQuery.sizeOf(context).height * 3 / 8,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(topLeft:Radius.circular(20), topRight: Radius.circular(20))
-                          ),
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20))),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20, top: 20),
+                                child: Text(
+                                  "ព័ត៌មានលំអិតរបស់អ្នកដំណើរ",
+                                  style: TextStyle(
+                                      color: ColorResources.primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Divider(thickness: 2),
                               Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 10, bottom: 5, left: 20),
+                                    padding: const EdgeInsets.only(
+                                        top: 10, bottom: 5, left: 20),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Text('120វិនាទី',style: TextStyle(color: Colors.red,fontSize: 12),),
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: NetworkImage(url),
+                                        ),
+                                        SizedBox(width: 20),
                                       ],
                                     ),
                                   ),
                                   Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 30, vertical: 10),
                                     child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[300]),
-                                        onPressed: (){}, child: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 15,horizontal: 50),
-                                      child: Text("12000រៀល",style: TextStyle(color: Colors.black,fontSize: 20),),
-                                    )),
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.grey[300]),
+                                        onPressed: () {},
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 50),
+                                          child: Text(
+                                            "12000រៀល",
+                                            style: TextStyle(
+                                                color: Colors.black, fontSize: 20),
+                                          ),
+                                        )),
                                   )
                                 ],
                               ),
-                              SizedBox(height: 20,),
+                              SizedBox(height: 20),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 20),
                                 child: Row(
                                   children: [
-                                    Icon(CupertinoIcons.location_fill,color: Colors.blue,),
-                                    SizedBox(width: 20,),
-                                    Text("ចម្ងាយ 200m ពីភ្ញៀវ",style: TextStyle(color: Colors.blue),)
+                                    Icon(CupertinoIcons.person, color: Colors.black),
+                                    SizedBox(width: 20),
+                                    Text(
+                                      userTripInfoDetail?["passenger_id"]
+                                      ["first_name"] +
+                                          " " +
+                                          userTripInfoDetail?["passenger_id"]
+                                          ["last_name"],
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    )
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 20,),
+                              SizedBox(height: 20),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 20),
                                 child: Row(
                                   children: [
-                                    Icon(CupertinoIcons.map_pin_ellipse,color: Colors.black,),
-                                    SizedBox(width: 20,),
-                                    Text("St528",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),)
+                                    Icon(CupertinoIcons.phone, color: Colors.black),
+                                    SizedBox(width: 20),
+                                    Text(
+                                      userTripInfoDetail?["passenger_id"]
+                                      ["phone_number"],
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 20,),
+                              SizedBox(height: 20),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 20),
                                 child: Row(
                                   children: [
-                                    Icon(CupertinoIcons.stop_circle_fill,color: Colors.red,),
-                                    SizedBox(width: 20,),
-                                    Text("Fun mall",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),)
+                                    Icon(CupertinoIcons.person_2,color: Colors.black),
+                                    SizedBox(width: 20),
+                                    Text(
+                                      userTripInfoDetail?["passenger_id"]
+                                      ["gender"] ??
+                                          "N/A",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 20,),
+                              SizedBox(height: 20),
                               Container(
                                 margin: EdgeInsets.symmetric(horizontal: 20),
                                 child: ElevatedButton(
@@ -348,19 +427,31 @@ class _BookingScreenState extends State<BookingScreen> {
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
-                                      padding: EdgeInsets.symmetric(vertical: 8,),
-                                      child: Text("ទទួលការកក់",style: TextStyle(color: Colors.white,fontSize: 18, fontWeight: FontWeight.bold),),
-                                    )
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 8,
+                                      ),
+                                      child: Text(
+                                        "បានមកដល់ទីតាំង",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
                                 ),
-                              )
+                              ),
+                              SizedBox(height: 20),
                             ],
-                          )
-                      ),
-                    )
+                          ),
+                        ),
+                    ),
+                  ),
                 ),
-              ],
-            ),
-          ]
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
