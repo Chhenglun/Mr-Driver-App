@@ -23,9 +23,7 @@ import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/messages.dart';
 import 'package:scholarar/util/notification_service.dart';
-import 'package:scholarar/view/screen/account/waiting_screen.dart';
 import 'package:scholarar/view/screen/splash/splash_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helper/get_di.dart' as di;
 
@@ -158,11 +156,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             }
             return supportedLocales.first;
           },
-          fallbackLocale: Locale(AppConstants.languages[0].languageCode!,
-              AppConstants.languages[0].countryCode),
-          //home: SplashScreen(),
-          //please validate me if user don't have aprove by admin so it still go to waiting screen 
-         // home: SplashScreen(),
+          fallbackLocale: Locale(AppConstants.languages[0].languageCode!,AppConstants.languages[0].countryCode),
           home: SplashScreen(),
         );
       });

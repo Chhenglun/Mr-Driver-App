@@ -16,7 +16,9 @@ class AppConstants {
   static const String statTrip = "/api/trips/start";
   static const String updateToken = "/api/trips/updateDriverToken";
   static const String acceptRequest = "/api/trips/accept";
-  static const String getTripID = "/api/trips/available";
+  //static const String resetToken = "/api/trips/resetFCMToken";
+  static const String deleteToken = "/api/trips/resetFCMToken";
+  //static const String getTripID = "/api/trips/available";
   //old project
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";
@@ -24,6 +26,7 @@ class AppConstants {
   static const String login = "/api/v1/login";
 
   static const String token = "token";
+  // static const String message = "message";
   static const String logo = "assets/images/logo.jpg";
   static const String languageCode = "language_code";
   static const String countryCode = "country_code";

@@ -1,50 +1,81 @@
 import 'dart:async';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/controller/get_booking_request.dart';
-import 'package:scholarar/util/alert_dialog.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
-import 'package:scholarar/view/screen/booking/opening_booking.dart';
-import 'package:scholarar/view/screen/profile/setting_screen.dart';
+import 'package:scholarar/view/screen/booking/open_booking.dart';
+import 'package:shared_preferences/shared_preferences.dart';// Import the file where frmTokenPublic is defined
 
-class OpenBooking extends StatefulWidget {
-  const OpenBooking({super.key});
+class OpeningBooking extends StatefulWidget {
+  const OpeningBooking({super.key});
 
   @override
-  State<OpenBooking> createState() => _OpenBookingState();
+  State<OpeningBooking> createState() => _OpeningBookingState();
 }
 
-class _OpenBookingState extends State<OpenBooking> {
-  final Completer<GoogleMapController> _controller = Completer();
+class _OpeningBookingState extends State<OpeningBooking> {
+  SharedPreferences? sharedPreferences;
   final AuthController authController = Get.find<AuthController>();
   final GetBookingRequestController bookingController = Get.find<GetBookingRequestController>();
-  final FirebaseAPI _firebaseAPI = FirebaseAPI();
+  final Completer<GoogleMapController> _controller = Completer();
   bool locationFetched = false;
-  LatLng currentPosition = const LatLng(0, 0);
-  bool isLoading = false;
+  LatLng currentPosition = const LatLng(0,0);
+  bool isLoading = true;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseAPI _firebaseAPI = FirebaseAPI();
 
-  @override
-  void initState() {
-    setState(() {
-      init();
-    });
-    super.initState();
-    _checkLocationPermissions();
-  }
-
-  Future<void> init() async {
+  init() async {
+    await bookingController.getRequest();
+    sharedPreferences = await SharedPreferences.getInstance();
     await authController.getDriverProfileController();
     setState(() {
       isLoading = false;
     });
+  }
+
+  void _configureFirebaseListeners() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _showAlertDialog(context, message.notification?.title, message.notification?.body);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _showAlertDialog(context, message.notification?.title, message.notification?.body);
+    });
+  }
+
+  void _showAlertDialog(BuildContext context, String? title, String? body) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title ?? 'Notification'),
+          content: Text(body ?? 'You have a new notification'),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLocationPermissions();
+    init();
+    _configureFirebaseListeners();
   }
 
   void _checkLocationPermissions() async {
@@ -69,6 +100,7 @@ class _OpenBookingState extends State<OpenBooking> {
       print('=====>>>>>>Location permissions are permanently denied.');
       return;
     }
+
     getCurrentLocation();
   }
 
@@ -108,26 +140,6 @@ class _OpenBookingState extends State<OpenBooking> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        nextScreen(context, SettingScreen());
-                      },
-                      icon: FaIcon(Icons.person, color: Colors.red, size: 30),
-                    ),
-                  ),
-                ),
-              ),
               Spacer(),
               Container(
                 child: Stack(
@@ -142,36 +154,41 @@ class _OpenBookingState extends State<OpenBooking> {
                     ),
                     Container(
                       height: MediaQuery.of(context).size.height * 3 / 12,
+                      alignment: Alignment.topLeft,
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("អ្នកកំពងប្រេីប្រាស់កម្មវិធី", style: TextStyle(color: Colors.black, fontSize: 20)),
-                          const SizedBox(height: 16),
-                          Text("សូមបើកការកក់របស់អ្នក....", style: TextStyle(color: Colors.black, fontSize: 16)),
-                          SizedBox(height: 16),
+                          const Text(
+                            "អ្នកកំពុងប្រេីប្រាស់កម្មវិធី",
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          SizedBox(height: 5),
+                          const Text(
+                            "អ្នកកំពុងបេីកការទទួលការកក់...",
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 14),
+                          ),
+                          SizedBox(height: 50),
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.green[500]),
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.red[500]),
                             onPressed: () async {
-                              await _firebaseAPI.initNotifications();
-                              String? deviceToken = frmTokenPublic; // Use the token obtained from initNotifications
-                              print("Device Token: $deviceToken");
                               String driverId = userNextDetails?["_id"];
                               print("driverId : $driverId");
-                              if (deviceToken != null && driverId != null) {
-                                List<double> location = [currentPosition.longitude, currentPosition.latitude];
-                                print("LocationTest: $location");
-                                bookingController.updateToken(deviceToken, driverId, location.toList());
+                              if (driverId != null) {
+                                bookingController.deleteDeviceToken(driverId);
                                 isLoading = true;
-                                nextScreen(context, OpeningBooking());
+                                nextScreen(context, OpenBooking());
                               } else {
-                                customShowSnackBar('Device token or driver ID is missing', context, isError: true);
+                                customShowSnackBar('Driver ID is missing', context, isError: true);
                               }
                             },
                             child: Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.symmetric(vertical: 8),
-                              child: const Text("បេីកការទទួលការកក់", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                              child: Text(
+                                "ឈប់ទទួលការកក់",
+                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                         ],
@@ -179,7 +196,7 @@ class _OpenBookingState extends State<OpenBooking> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ],

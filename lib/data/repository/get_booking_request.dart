@@ -18,10 +18,11 @@ class GetBookingRequestRepository{
     }
   }
   //Todo: updateToken
-  Future updateToken(String deviceToken ,String driverId) async {
-    Map<String, dynamic> body = {
+  Future updateToken(String deviceToken ,String driverId , List<double> location  ) async {
+    Map<dynamic, dynamic> body = {
       "deviceToken": deviceToken,
       "driver_id": driverId,
+      "location" : location,
     };
     try {
       final response = await dioClient.postData(AppConstants.updateToken, body);
@@ -30,14 +31,45 @@ class GetBookingRequestRepository{
       throw e.toString();
     }
   }
+  //Todo: resetToken
+  /*Future resetToken(String deviceToken ,String driverId) async {
+    Map<String, dynamic> body = {
+      "deviceToken": deviceToken,
+      "driver_id": driverId,
+
+    };
+    try {
+      final response = await dioClient.postData(AppConstants.resetToken, body);
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }*/
+  //Todo: deleteToken
+Future deleteToken(String driverId) async {
+  Map<String, dynamic> body = {
+    "driver_id": driverId,
+  };
+  try {
+    final response = await dioClient.putData(
+        AppConstants.deleteToken,
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+    });
+    return response;
+  } catch (e) {
+    throw e.toString();
+  }
+}
   //Todo: getDripIDRepository
-  Future getDriverID() async {
+  /*Future getDriverID() async {
     try {
       final response = await dioClient.getData("${AppConstants.getTripID}/");
       return response;
     } catch (e) {
       throw e.toString();
     }
-  }
+  }*/
 
 }
