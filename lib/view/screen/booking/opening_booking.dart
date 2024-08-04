@@ -45,9 +45,9 @@ class _OpeningBookingState extends State<OpeningBooking> {
       _showAlertDialog(context, message.notification?.title, message.notification?.body);
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+   /* FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _showAlertDialog(context, message.notification?.title, message.notification?.body);
-    });
+    });*/
   }
 
   void _showAlertDialog(BuildContext context, String? title, String? body) {
@@ -69,7 +69,6 @@ class _OpeningBookingState extends State<OpeningBooking> {
       },
     );
   }
-
   @override
   void initState() {
     super.initState();

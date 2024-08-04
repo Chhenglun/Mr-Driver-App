@@ -31,6 +31,19 @@ class GetBookingRequestRepository{
       throw e.toString();
     }
   }
+  //Todo: acceptBooking
+  Future acceptBooking(String driverId ,String tripId) async {
+    Map<String, dynamic> body = {
+      "trip_id": tripId,
+      "driver_id": driverId,
+    };
+    try {
+      final response = await dioClient.postData(AppConstants.acceptTrip, body);
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
   //Todo: resetToken
   /*Future resetToken(String deviceToken ,String driverId) async {
     Map<String, dynamic> body = {

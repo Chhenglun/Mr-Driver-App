@@ -133,6 +133,38 @@ class GetBookingRequestController extends GetxController implements GetxService 
       update();
     }
   }
+  //Todo: acceptBooking Controller
+  Future acceptBooking(String driverId, String tripId) async {
+    try {
+      _isLoading = true;
+      update();
+      Response apiResponse = await getBookingRequestController.acceptBooking(driverId, tripId);
+      if (apiResponse.statusCode == 200) {
+        print("Accept Booking Success: ${apiResponse.body}");
+        customShowSnackBar('ការបើកទទួលការកក់របស់អ្នកទទួលបានជោគជ័យ', Get.context!, isError: false);
+        Map<String, dynamic> map = apiResponse.body;
+        /*try {
+          // Save message to local storage
+          await sharedPreferences.setString(AppConstants.message, map['message']);
+        } catch (e) {
+          print("Error: $e");
+          customShowSnackBar('An error occurred', Get.context!, isError: true);
+        }*/
+      } else if (apiResponse.statusCode == 404) {
+        print("Driver not found");
+        customShowSnackBar('Driver not found', Get.context!, isError: true);
+      } else {
+        print("Error accepting booking: ${apiResponse.body}");
+        customShowSnackBar('Error accepting booking', Get.context!, isError: true);
+      }
+    } catch (e) {
+      print("Error: $e");
+      customShowSnackBar('An error occurred', Get.context!, isError: true);
+    } finally {
+      _isLoading = false;
+      update();
+    }
+  }
   /*//Todo: Update Token Controller
 
   Future updateToken(String deviceToken ,String driverId) async {
