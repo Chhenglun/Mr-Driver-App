@@ -17,6 +17,10 @@ import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/util/style.dart';
 import 'package:scholarar/view/custom/custom_button_widget.dart';
 import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
+import 'package:scholarar/view/screen/booking/booking_history_display.dart';
+import 'package:scholarar/view/screen/chat/contact_us.dart';
+import 'package:scholarar/view/screen/chat/developer_screen.dart';
+import 'package:scholarar/view/screen/chat/notification_screen.dart';
 import 'package:scholarar/view/screen/profile/profile_screen.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -280,19 +284,33 @@ class _SettingScreenState extends State<SettingScreen> {
                       CustomListWidget.customListTileSettingScreen(
                         title: 'ប្រវត្តិរបស់ខ្ញុំ',
                         icon: FontAwesomeIcons.history,
-                        onPress: () {},
+                        onPress: () {
+                          nextScreen(context, HistoryScreen());
+                        },
                       ),
                       SizedBox(height: 16),
                       CustomListWidget.customListTileSettingScreen(
                         title: 'ការជូនដំណឹង',
                         icon: FontAwesomeIcons.bell,
-                        onPress: () {},
+                        onPress: () {
+                          nextScreen(context, NotificationScreen());
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      CustomListWidget.customListTileSettingScreen(
+                        title: 'អំពីយេីង',
+                        icon: Icons.more_horiz,
+                        onPress: () {
+                          nextScreen(context, ContactUs());
+                        },
                       ),
                       SizedBox(height: 16),
                       CustomListWidget.customListTileSettingScreen(
                         title: 'ទំនាក់ទំនងយើង',
                         icon: FontAwesomeIcons.phone,
-                        onPress: () {},
+                        onPress: () {
+                          nextScreen(context, DeveloperScreen());
+                        },
                       ),
                       SizedBox(height: 32),
                       //Todo: Logout
