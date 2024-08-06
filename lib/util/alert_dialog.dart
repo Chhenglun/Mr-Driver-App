@@ -61,14 +61,6 @@ Future customNotificationDialog({required BuildContext context,required String t
                             color: ColorResources.whiteColor,
                             wordSpacing: 1.5),),
                     ),
-                    /*Column(
-                      children: [
-                        Text(username, style: TextStyle(fontSize: 18, color: ColorResources.whiteColor,),),
-                        SizedBox(height: 5),
-                        Text(phoneNumber, style: TextStyle(fontSize: 16, color: ColorResources.whiteColor,),),
-                      ],
-                    )*/
-
 
                   ],
                 ),

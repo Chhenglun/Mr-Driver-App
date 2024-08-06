@@ -1,15 +1,20 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/controller/get_booking_request.dart';
+import 'package:scholarar/controller/booking_process_controller.dart';
 import 'package:scholarar/util/alert_dialog.dart';
-import 'package:scholarar/util/firebase_api.dart';
+import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'driver_start_pick_passenger_screen.dart';
 
 class OpeningBooking extends StatefulWidget {
   const OpeningBooking({super.key});
@@ -21,13 +26,13 @@ class OpeningBooking extends StatefulWidget {
 class _OpeningBookingState extends State<OpeningBooking> {
   SharedPreferences? sharedPreferences;
   final AuthController authController = Get.find<AuthController>();
-  final GetBookingRequestController bookingController = Get.find<GetBookingRequestController>();
+  final BookingProcessController bookingController = Get.find<BookingProcessController>();
   final Completer<GoogleMapController> _controller = Completer();
   bool locationFetched = false;
   LatLng currentPosition = const LatLng(0, 0);
   bool isLoading = true;
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FirebaseAPI _firebaseAPI = FirebaseAPI();
+  /*FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;*/
+  /*final FirebaseAPI _firebaseAPI = FirebaseAPI();*/
   String? _tripID; // To store the tripID
   bool isDialogVisible = false; // To track dialog visibility
 
@@ -40,7 +45,6 @@ class _OpeningBookingState extends State<OpeningBooking> {
   }
 
   init() async {
-    await bookingController.getRequest();
     sharedPreferences = await SharedPreferences.getInstance();
     await authController.getDriverProfileController();
     setState(() {
@@ -57,7 +61,34 @@ class _OpeningBookingState extends State<OpeningBooking> {
         });
         print('Received tripID: $_tripID');
         if (!isDialogVisible) {
-          _showCustomNotificationDialog(context, message.data['title'], message.data['body']);
+          //_showCustomNotificationDialog(context, message.data['title'], message.data['body']);
+          customNotificationDialog(
+            context: Get.context!,
+            title: message.notification!.title!,
+            body: message.notification!.body!,
+            onTap: () {
+              FlutterAppBadger.removeBadge();
+              //nextScreen(context, AcceptedScreen());
+              String driverId = authController.userDriverMap?['userDetails']['_id'];
+              print("driverId : $driverId");
+              if (driverId != null && _tripID != null) {
+                setState(() {
+                  isLoading = true;
+                  isDialogVisible = false;
+                });
+                List<double> location = [currentPosition.longitude, currentPosition.latitude];
+                bookingController.acceptBooking(driverId, _tripID! ,location);
+                //bookingController.deleteDeviceToken(driverId);
+
+              } else {
+                customShowSnackBar('Driver ID is missing', context, isError: true);
+                setState(() {
+                  isDialogVisible = false;
+                });
+              }
+            },
+            // btnText: 'Go To Trip'.tr,
+          );
         }
       }
     });
@@ -70,11 +101,39 @@ class _OpeningBookingState extends State<OpeningBooking> {
         });
         print('Received tripID: $_tripID');
         if (!isDialogVisible) {
-          _showCustomNotificationDialog(context, message.data['title'], message.data['body']);
+          customNotificationDialog(
+            context: Get.context!,
+            title: message.notification!.title!,
+            body: message.notification!.body!,
+            onTap: () {
+              FlutterAppBadger.removeBadge();
+              //nextScreen(context, AcceptedScreen());
+              String driverId = authController.userDriverMap?['userDetails']['_id'];
+              print("driverId : $driverId");
+              if (driverId != null && _tripID != null) {
+                setState(() {
+                  isLoading = true;
+                  isDialogVisible = false;
+                });
+                List<double> location = [currentPosition.longitude, currentPosition.latitude];
+                bookingController.acceptBooking(driverId, _tripID! ,location);
+                //bookingController.deleteDeviceToken(driverId);
+
+              } else {
+                customShowSnackBar('Driver ID is missing', context, isError: true);
+                setState(() {
+                  isDialogVisible = false;
+                });
+              }
+            },
+            // btnText: 'Go To Trip'.tr,
+          );
+          //_showCustomNotificationDialog(context, message.data['title'], message.data['body']);
         }
       }
     });
   }
+
 
   Future<void> _showCustomNotificationDialog(BuildContext context, String? title, String? body) async {
     isDialogVisible = true;
@@ -96,7 +155,7 @@ class _OpeningBookingState extends State<OpeningBooking> {
           });
           List<double> location = [currentPosition.longitude, currentPosition.latitude];
           bookingController.acceptBooking(driverId, _tripID! ,location);
-          bookingController.deleteDeviceToken(driverId);
+          //bookingController.deleteDeviceToken(driverId);
 
         } else {
           customShowSnackBar('Driver ID is missing', context, isError: true);
@@ -111,6 +170,7 @@ class _OpeningBookingState extends State<OpeningBooking> {
       });
     });
   }
+
 
   void _checkLocationPermissions() async {
     bool serviceEnabled;
@@ -213,8 +273,6 @@ class _OpeningBookingState extends State<OpeningBooking> {
                                 setState(() {
                                   isLoading = true;
                                 });
-                                List<double> location = [currentPosition.longitude, currentPosition.latitude];
-                                await bookingController.acceptBooking(driverId, _tripID! ,location.toList());
                               } else {
                                 customShowSnackBar('Driver ID is missing', context, isError: true);
                               }
@@ -222,9 +280,15 @@ class _OpeningBookingState extends State<OpeningBooking> {
                             child: Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.symmetric(vertical: 8),
-                              child: Text(
-                                "ឈប់ទទួលការកក់",
-                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.cancel, color: Colors.white),
+                                  SizedBox(width: 25),
+                                  Text(
+                                    "ឈប់ទទួលការកក់",
+                                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

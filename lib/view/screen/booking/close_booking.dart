@@ -9,11 +9,10 @@ import 'dart:typed_data';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scholarar/controller/get_booking_request.dart';
-import 'package:scholarar/data/repository/get_booking_request.dart';
+import 'package:scholarar/controller/booking_process_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/booking/tracking.dart';
+import 'package:scholarar/view/screen/booking/driver_start_pick_passenger_screen.dart';
 
 class CloseBooking extends StatefulWidget {
   const CloseBooking({super.key});
@@ -27,8 +26,7 @@ class _CloseBookingState extends State<CloseBooking> {
   bool locationFetched = false;
   LatLng currentPosition = const LatLng(0,0);
   bool isLoading = true;
-  GetBookingRequestController getBookingRequestController = Get.find<GetBookingRequestController>();
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  BookingProcessController getBookingRequestController = Get.find<BookingProcessController>();
   BitmapDescriptor CurrentLocationIcon = BitmapDescriptor.defaultMarker;
 
   Set<Marker> _markers() {
@@ -65,7 +63,6 @@ class _CloseBookingState extends State<CloseBooking> {
     });
   }
   init() async {
-    await getBookingRequestController.getRequest();
     setState(() {
       isLoading = false;
     });
@@ -221,7 +218,7 @@ class _CloseBookingState extends State<CloseBooking> {
                             ElevatedButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red[500]),
                                 onPressed: () {
-                                  nextScreen(context, TrackingScreen());
+                                  nextScreen(context, DriverStartPickPasssenger());
                                 },
                                 child: Container(
                                   alignment: Alignment.center,

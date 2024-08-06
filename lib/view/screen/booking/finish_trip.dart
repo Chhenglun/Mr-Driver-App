@@ -4,19 +4,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:scholarar/controller/booking_process_controller.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
+import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/screen/booking/close_booking.dart';
 
 
-class ArriveScreen extends StatefulWidget {
-  const ArriveScreen({super.key});
+class FinishTrip extends StatefulWidget {
+  const FinishTrip({super.key});
 
   @override
-  State<ArriveScreen> createState() => _ArriveScreenState();
+  State<FinishTrip> createState() => _FinishTripState();
 }
 
-class _ArriveScreenState extends State<ArriveScreen> {
+class _FinishTripState extends State<FinishTrip> {
+  final BookingProcessController bookingController = Get.find<BookingProcessController>();
   final Completer<GoogleMapController> _controller = Completer();
   static const LatLng destination = LatLng(11.544, 104.8112);
   List<LatLng> polyLineCoordinates = [];
@@ -245,7 +251,7 @@ class _ArriveScreenState extends State<ArriveScreen> {
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green[500]),
                                 onPressed: () {
-
+                                    nextScreenNoReturn(Get.context, CloseBooking());
                                 },
                                 child: Container(
                                   alignment: Alignment.center,

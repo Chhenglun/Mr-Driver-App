@@ -17,10 +17,11 @@ class AppConstants {
   static const String updateToken = "/api/trips/updateDriverToken";
   static const String acceptRequest = "/api/trips/accept";
   static const String deleteToken = "/api/trips/resetFCMToken";
-  //static const String getTripID = "/api/trips/available";
   static const String acceptTrip = "/api/trips/accept";
-  //here how to get trip id
-  static const String getTripInfo = "/api/trips/{trip_id}";
+  static const String getTripInfo = "/api/trips/";
+  static const String startTrip = " /api/trips/start";
+  static const String finishTrip = "/api/trips/finish";
+
   //old project
   static const String getBookStore = "/api/books";
   static const String testVideoAPI = "/api/categories";
@@ -59,7 +60,7 @@ class AppConstants {
   static const String deviceInfo = "";
   static const String changePhoneNumber = "";
   //get request
-  static const String getBookingRequest = "/api/trips/pendingtrip?driver_id=66712eb30fd44ef189554e4b&lat=10.345500&lng=106.412500";
+  /*static const String getBookingRequest = "/api/trips/pendingtrip?driver_id=66712eb30fd44ef189554e4b&lat=10.345500&lng=106.412500";*/
 
   // course
   static const String getCourse = "/api/courses";

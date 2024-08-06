@@ -8,7 +8,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scholarar/controller/get_booking_request.dart';
+import 'package:scholarar/controller/booking_process_controller.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'dart:ui' as ui;
@@ -17,16 +17,23 @@ import 'dart:typed_data';
 import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/screen/booking/driver_go_to_passenger_screen.dart';
+import 'package:flutter_polyline_points/src/point_lat_lng.dart';
+import 'package:flutter_polyline_points/src/utils/polyline_waypoint.dart';
+import 'package:flutter_polyline_points/src/utils/request_enums.dart';
+import 'package:flutter_polyline_points/src/utils/polyline_decoder.dart';
+import 'package:flutter_polyline_points/src/utils/polyline_request.dart';
+import 'package:flutter_polyline_points/src/point_lat_lng.dart';
+import 'package:flutter_polyline_points/src/utils/polyline_result.dart';
 
-class AcceptedScreen extends StatefulWidget {
-  const AcceptedScreen({super.key});
+class DriverStartPickPasssenger extends StatefulWidget {
+  const DriverStartPickPasssenger({super.key});
 
   @override
-  State<AcceptedScreen> createState() => _AcceptedScreenState();
+  State<DriverStartPickPasssenger> createState() => _DriverStartPickPasssengerState();
 }
 
-class _AcceptedScreenState extends State<AcceptedScreen> {
-  final GetBookingRequestController bookingController = Get.find<GetBookingRequestController>();
+class _DriverStartPickPasssengerState extends State<DriverStartPickPasssenger> {
+  final BookingProcessController bookingController = Get.find<BookingProcessController>();
   final Completer<GoogleMapController> _controller = Completer();
   List<LatLng> polyLineCoordinates = [];
   LatLng currentPosition = const LatLng(0, 0);
@@ -542,11 +549,10 @@ class _AcceptedScreenState extends State<AcceptedScreen> {
                                           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                                         ),
                                         onPressed: () {
-                                          //bookingController.startTrip(tripId: bookingController.tripID);
-                                          //nextScreenNoReturn(context, );
+                                          bookingController.startTrip(tripId: bookingController.tripID);
                                         },
                                         child: Text(
-                                          "ចាប់ផ្តើមទៅយកអ្នកកក់",
+                                          "ចាប់ផ្តើមការដឹក",
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 16,
@@ -573,4 +579,3 @@ class _AcceptedScreenState extends State<AcceptedScreen> {
     );
   }
 }
-

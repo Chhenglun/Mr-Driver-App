@@ -12,36 +12,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scholarar/controller/get_booking_request.dart';
+import 'package:scholarar/controller/booking_process_controller.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/app/app_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DriverPickPassengerScreen extends StatefulWidget {
-  const DriverPickPassengerScreen({super.key});
+class OnGoingScreen extends StatefulWidget {
+  const OnGoingScreen({super.key});
 
   @override
-  State<DriverPickPassengerScreen> createState() => _DriverPickPassengerScreenState();
+  State<OnGoingScreen> createState() => _OnGoingScreenState();
 }
 
-class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
-  GetBookingRequestController bookingController = Get.find<GetBookingRequestController>();
+class _OnGoingScreenState extends State<OnGoingScreen> {
+  BookingProcessController bookingController = Get.find<BookingProcessController>();
+
   final Completer<GoogleMapController> _controller = Completer();
-  bool toSelected = false;
-  static const LatLng destination = LatLng(11.544, 104.8112);
   List<LatLng> polyLineCoordinates = [];
-  LatLng currentPosition = destination;
-  LatLng driverPosition = LatLng(11.570, 104.875);
+  LatLng currentPosition = LatLng(0, 0);
+  LatLng endPosition = LatLng(0, 0);
   StreamSubscription<Position>? positionStreamSubscription;
   String url = "https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png";
   Timer? driverTimer;
   Uri dialnumber = Uri(scheme: 'tel', path: '012345678');
   BitmapDescriptor CurrentIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor DestinationIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor EndLocationIcon = BitmapDescriptor.defaultMarker;
   bool isLoading = true;
-  //phone Number formart
+
+  // phone Number format
   String formatPhoneNumber(String phoneNumber) {
     if (phoneNumber.length == 10) {
       return "(${phoneNumber.substring(0, 3)}) ${phoneNumber.substring(3, 6)}-${phoneNumber.substring(6, 10)}";
@@ -51,19 +51,31 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
   }
 
   Set<Marker> _markers() {
+    var userTripInfoDetail = bookingController.tripInfo;
+
+    LatLng driverLatLng = currentPosition;
+    LatLng passengerLatLng = currentPosition;
+    LatLng endLatLng = endPosition;
+
     return <Marker>[
       Marker(
-        markerId: MarkerId('current_location'),
-        position: currentPosition,
-        icon: CurrentIcon!,
+        markerId: MarkerId('driver_location'),
+        position: driverLatLng,
+        icon: CurrentIcon,
       ),
       Marker(
-        markerId: MarkerId('destination'),
-        position: destination,
-        icon: DestinationIcon!,
+        markerId: MarkerId('passenger_location'),
+        position: passengerLatLng,
+        icon: CurrentIcon,
+      ),
+      Marker(
+        markerId: MarkerId('end_location'),
+        position: endLatLng,
+        icon: EndLocationIcon,
       ),
     ].toSet();
   }
+
   void setCurrentIcon() async {
     final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
@@ -79,13 +91,14 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
     final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
 
-    final BitmapDescriptor Currenticon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    final BitmapDescriptor currentIcon = await BitmapDescriptor.fromBytes(resizedUint8List!);
     setState(() {
-      CurrentIcon = Currenticon;
+      CurrentIcon = currentIcon;
     });
   }
-  void setDestinationIcon() async {
-    final ByteData byteData = await rootBundle.load('assets/icons/driver_icon.jpg');
+
+  void setEndLocationIcon() async {
+    final ByteData byteData = await rootBundle.load('assets/icons/end_location_icon.png'); // Use appropriate image
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
@@ -99,33 +112,43 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
     final ByteData? resizedByteData = await frameInfo.image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List? resizedUint8List = resizedByteData?.buffer.asUint8List();
 
-    final BitmapDescriptor destinationIcon = await BitmapDescriptor.fromBytes(resizedUint8List!);
+    final BitmapDescriptor endLocationIcon = await BitmapDescriptor.fromBytes(resizedUint8List!);
     setState(() {
-      DestinationIcon = destinationIcon;
+      EndLocationIcon = endLocationIcon;
     });
   }
 
   Future<void> callNumber() async {
     await launchUrl(dialnumber);
   }
-  /*Future<void> directCall() async {
-    await FlutterPhoneDirectCaller.callNumber('012345678');
-  }*/
+
   Future<void> init() async {
     await bookingController.getTripInfo(bookingController.tripID);
+    setLocations();
+    print("Trip Info: ${bookingController.tripInfo}");
     setState(() {
       isLoading = false;
     });
   }
+
+  void setLocations() {
+    var userTripInfoDetail = bookingController.tripInfo;
+    if (userTripInfoDetail != null) {
+      if (userTripInfoDetail["end_location"] != null) {
+        var endCoordinates = userTripInfoDetail["end_location"]["coordinates"];
+        setState(() {
+          endPosition = LatLng(endCoordinates[1], endCoordinates[0]);
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
-    setState(() {
-      init();
-    });
-    setCurrentIcon();
-    setDestinationIcon();
     super.initState();
-    //_addCurrentLocationMarker();
+    init();
+    setCurrentIcon();
+    setEndLocationIcon();
     _checkLocationPermissions();
   }
 
@@ -142,7 +165,7 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
     // Create a PolylineRequest object with required parameters
     PolylineRequest request = PolylineRequest(
       origin: PointLatLng(currentPosition.latitude, currentPosition.longitude),
-      destination: PointLatLng(destination.latitude, destination.longitude),
+      destination: PointLatLng(endPosition.latitude, endPosition.longitude),
       mode: TravelMode.driving, // Set the mode of travel if required
     );
 
@@ -229,10 +252,10 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
     driverTimer = Timer.periodic(duration, (timer) {
       setState(() {
         double newLat =
-            driverPosition.latitude + (Random().nextDouble() * 0.001 - 0.0005);
+            currentPosition.latitude + (Random().nextDouble() * 0.001 - 0.0005);
         double newLng =
-            driverPosition.longitude + (Random().nextDouble() * 0.001 - 0.0005);
-        driverPosition = LatLng(newLat, newLng);
+            currentPosition.longitude + (Random().nextDouble() * 0.001 - 0.0005);
+        currentPosition = LatLng(newLat, newLng);
         getPolyPoint();
       });
     });
@@ -241,7 +264,7 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
   @override
   Widget build(BuildContext context) {
     var userTripInfoDetail = bookingController.tripInfo;
-    //Todo: fomart distance
+    //Todo: format distance
     double? distance = userTripInfoDetail?["distance_between_passenger_and_driver"];
     String formattedDistance = distance != null ? "${distance.toStringAsFixed(2)} km" : "N/A";
     //Todo: call format phone number
@@ -251,7 +274,7 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: currentPosition == destination
+        body: isLoading
             ? Center(child: CircularProgressIndicator())
             : Stack(
           children: [
@@ -274,7 +297,7 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
               markers: _markers(),
             ),
             Visibility(
-              visible: currentPosition != destination,
+              visible: currentPosition != endPosition,
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
@@ -335,9 +358,10 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                              "តម្លៃការដឹកជញ្ជូន: ",
-                                              style: TextStyle(color: ColorResources.blackColor, fontSize: 14,
-                                              ),
+                                            "តម្លៃការដឹកជញ្ជូន: ",
+                                            style: TextStyle(
+                                              color: ColorResources.blackColor, fontSize: 14,
+                                            ),
                                           ),
                                           Text(
                                             overflow: TextOverflow.ellipsis,
@@ -348,16 +372,10 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-
-                                          /* Text(
-                                            overflow: TextOverflow.ellipsis,
-                                            " ${ userTripInfoDetail?["cost"].toString() ?? "N/A" } រៀល",
-                                            style: TextStyle(color: Colors.black, fontSize: 12,fontWeight: FontWeight.bold
-                                            ),
-                                          ),*/
                                         ],
                                       ),
-                                    ))
+                                    )
+                                )
                               ],
                             ),
                           ),
@@ -446,8 +464,7 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
                                   child: Stack(
                                     children: [
                                       IconButton(
-                                        //onPressed: callNumber,
-                                        onPressed: (){},
+                                        onPressed: callNumber,
                                         icon: Icon(
                                             CupertinoIcons.phone_fill,
                                             color: Colors.white
@@ -485,10 +502,13 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
                                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                                     ),
                                     onPressed: () {
-                                      nextScreen(context, DriverPickPassengerScreen());
+                                      bookingController.finishTripController(
+                                          tripId: bookingController.tripID,
+                                          coordinates: [endPosition.longitude, endPosition.latitude]
+                                      );
                                     },
                                     child: Text(
-                                      "ចាប់ផ្តើមការដឹកជញ្ជូន",
+                                      "បញ្ចប់ការដឹកជញ្ជូន",
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 16
@@ -510,37 +530,6 @@ class _DriverPickPassengerScreenState extends State<DriverPickPassengerScreen> {
           ],
         ),
       ),
-    );
-  }
-  void _showAlertDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("បញ្ជាក់"),
-          content: Text("តេីអ្នកពិតជាចង់លុបចោលការកក់មែនទេ?",style: TextStyle(color:ColorResources.blackColor , fontSize: 16),),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorResources.greyColor
-              ),
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-              child: Text('បោះបង់',style: TextStyle(color:ColorResources.blackColor , fontSize: 14),),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorResources.redColor
-              ),
-              onPressed: (){
-                nextScreen(context, AppScreen());
-              },
-              child: Text('យល់ព្រម',style: TextStyle(color:ColorResources.whiteColor , fontSize: 14),),
-            ),
-          ],
-        );
-      },
     );
   }
 }

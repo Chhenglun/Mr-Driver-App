@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/controller/book_store_controller.dart';
 import 'package:scholarar/controller/course_controller.dart';
-import 'package:scholarar/controller/get_booking_request.dart';
+import 'package:scholarar/controller/booking_process_controller.dart';
 import 'package:scholarar/controller/home_controller.dart';
 import 'package:scholarar/controller/localization_controller.dart';
 import 'package:scholarar/controller/splash_controller.dart';
@@ -54,7 +54,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => BookStoreController(bookStoreRepository: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => CourseController(courseRepository: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeController(homeRepository: Get.find(), sharedPreferences: Get.find()));
-  Get.lazyPut(() => GetBookingRequestController(getBookingRequestController: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => BookingProcessController(getBookingRequestController: Get.find(), sharedPreferences: Get.find()));
 
 
   // Retrieving localized data

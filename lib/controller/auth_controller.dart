@@ -316,7 +316,7 @@ class AuthController extends GetxController implements GetxService {
       if (apiResponse.statusCode == 200) {
         Navigator.pop(Get.context!);
         Map<String, dynamic> map = apiResponse.body;
-
+        print("LoginWithDriver: $map");
         // Post device token
         //await postDeviceToken(map['_id']);
 
@@ -338,27 +338,27 @@ class AuthController extends GetxController implements GetxService {
         if (token != null && token.isNotEmpty) {
           if (role == "driver") {
             await _tokenHelper.saveToken(token: token).then((_) async {
-              customShowSnackBar('successfulLoginAccount'.tr, Get.context!, isError: false);
+              customShowSnackBar('អ្នកបានបង្កើតគណនីបានដោយជោគជ័យ'.tr, Get.context!, isError: false);
               nextScreenNoReturn(Get.context!, SplashScreen());
             });
           } else {
-            customShowSnackBar('Invalid role! You are not a passenger.'.tr, Get.context!, isError: true);
+            customShowSnackBar('អ្នកមិនមែនជាអ្នកបើកបរទេ!'.tr, Get.context!, isError: true);
           }
         } else {
-          customShowSnackBar('theAccountHasAlreadyBeenTaken'.tr, Get.context!, isError: true);
+          customShowSnackBar('មានបញ្ហាកើតឡើង'.tr, Get.context!, isError: true);
         }
 
         _isLoading = false;
         update();
       } else {
         Navigator.pop(Get.context!);
-        customShowSnackBar('Invalid Email/Phone or Password'.tr, Get.context!, isError: true);
+        customShowSnackBar('ព័ត៍មានរបស់អ្នកបានបញ្ចូលមិនត្រឹមត្រូវ'.tr, Get.context!, isError: true);
       }
     } catch (e) {
       print("Error B");
       print(e.toString());
       Navigator.pop(Get.context!);
-      customShowSnackBar('Error during login. Please try again.'.tr, Get.context!, isError: true);
+      customShowSnackBar('ការបង្កើតគណនីរបស់អ្នកមិនទទូួលបានជោគជ័យនោះទេ!'.tr, Get.context!, isError: true);
       _isLoading = false;
       update();
     }

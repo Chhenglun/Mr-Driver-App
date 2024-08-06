@@ -1,3 +1,4 @@
+import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:scholarar/data/api/api_client.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,15 +9,6 @@ class GetBookingRequestRepository{
 
   GetBookingRequestRepository({required this.dioClient, required this.sharedPreferences});
 
-  // TODO: GetBookStore
-  Future getBooking() async {
-    try {
-      final response = await dioClient.getData("${AppConstants.getBookingRequest}/");
-      return response;
-    } catch (e) {
-      throw e.toString();
-    }
-  }
   //Todo: updateToken
   Future updateToken(String deviceToken ,String driverId , List<double> location  ) async {
     Map<dynamic, dynamic> body = {
@@ -77,23 +69,54 @@ Future deleteToken(String driverId) async {
   }
 }
   //Todo: GetTripInfo
-  Future getTripInfo({required String tripId, } ) async {
+  Future<Response> getTripInfo({required String tripId}) async {
     try {
-      final response = await dioClient.getData(AppConstants.getTripInfo.replaceFirst("{trip_id}", tripId));
-      print("end of getTripInfo $response");
+      //final response = await dioClient.getData("${AppConstants.getTripInfo}$tripId");
+      final response = await dioClient.getData("${AppConstants.getTripInfo}$tripId");
+      print(" Endpoint ${AppConstants.getTripInfo}$tripId");
       return response;
     } catch (e) {
       throw e.toString();
     }
   }
-  //Todo: getDripIDRepository
-  /*Future getDriverID() async {
+
+  //Todo: startTripRepo
+  Future startTripRepo(String tripId) async {
+    Map<String, dynamic> body = {
+      "trip_id": tripId,
+    };
     try {
-      final response = await dioClient.getData("${AppConstants.getTripID}/");
+      final response = await dioClient.postData(AppConstants.startTrip, body);
       return response;
     } catch (e) {
       throw e.toString();
     }
-  }*/
+  }
+
+  //Todo: finishTrip
+  Future finishTrip(String tripId, List<double> coordinates) async {
+    Map<String, dynamic> body = {
+      "trip_id": tripId,
+      "end_location": {
+        "type": "Point",
+        "coordinates": [coordinates[0], coordinates[1]], // Ensure latitude is first, longitude is second
+      }
+    };
+    try {
+      final response = await dioClient.postData(AppConstants.finishTrip, body);
+
+      // Log the request and response for debugging
+      print("Request URL: ${AppConstants.finishTrip}");
+      print("Request Body: $body");
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Data: ${response.body}");
+
+      return response;
+    } catch (e) {
+      print("Request Error: $e");
+      throw e.toString();
+    }
+  }
+
 
 }

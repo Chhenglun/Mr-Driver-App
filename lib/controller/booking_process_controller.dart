@@ -21,10 +21,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/repository/tracking_repository.dart';
 
-class GetBookingRequestController extends GetxController implements GetxService {
+class BookingProcessController extends GetxController implements GetxService {
   final GetBookingRequestRepository getBookingRequestController;
   final SharedPreferences sharedPreferences;
-  GetBookingRequestController({required this.getBookingRequestController, required this.sharedPreferences});
+  BookingProcessController({required this.getBookingRequestController, required this.sharedPreferences});
 
   //set
   var _isLoading = false.obs;
@@ -229,23 +229,30 @@ class GetBookingRequestController extends GetxController implements GetxService 
       if (apiResponse.statusCode == 200) {
         print("Finish Trip Success: ${apiResponse.body}");
         customShowTopBanner(Get.context!, 'អ្នកបានបញ្ចប់ការកក់ដោយជោគជ័យ', isError: false);
-        nextScreenNoReturn(context, OpeningBooking());
+        nextScreenNoReturn(Get.context!, OpenBooking());
         Map map = apiResponse.body;
         print("Finish Trip Info: $map");
+        String message = map["message"];
+        print("map = $message");
+        customShowTopBanner(Get.context!, "អ្នកបានបញ្ចប់ការកក់ដោយជោគជ័យ", isError: false);
       } else if (apiResponse.statusCode == 404) {
         print("Trip not found");
-        customShowSnackBar('Trip not found', Get.context!, isError: true);
+        //customShowSnackBar('Trip not found', Get.context!, isError: true);
+        customShowTopBanner(Get.context!, "មានបញ្ហាមិនប្រក្រតី", isError: true);
       } else {
         print("Error finishing trip: ${apiResponse.body}");
-        customShowSnackBar('Error finishing trip', Get.context!, isError: true);
+        //customShowSnackBar('Error finishing trip', Get.context!, isError: true);
+        customShowTopBanner(Get.context!, "ការបញប់របស់អ្នកបរាជ័យ", isError: true);
       }
     } catch (e) {
       print("Error: $e");
-      customShowSnackBar('An error occurred', Get.context!, isError: true);
+      //customShowSnackBar('An error occurred', Get.context!, isError: true);
+      customShowTopBanner(Get.context!, "ការបញ្ចប់របស់អ្នកមិនទាន់ត្រឹមត្រូវនោះទេ", isError: true);
     } finally {
       _isLoading.value = false;
       update();
     }
   }
+
 
 }

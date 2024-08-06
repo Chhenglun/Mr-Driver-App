@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/controller/get_booking_request.dart';
+import 'package:scholarar/controller/booking_process_controller.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/firebase_api.dart';
 import 'package:scholarar/util/next_screen.dart';
@@ -30,23 +30,21 @@ class OpenBooking extends StatefulWidget {
 class _OpenBookingState extends State<OpenBooking> {
   final Completer<GoogleMapController> _controller = Completer();
   final AuthController authController = Get.find<AuthController>();
-  final GetBookingRequestController bookingController = Get.find<GetBookingRequestController>();
+  final BookingProcessController bookingController = Get.find<BookingProcessController>();
   final FirebaseAPI _firebaseAPI = FirebaseAPI();
 
-  BitmapDescriptor CurrentLocationIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
   bool locationFetched = false;
   LatLng currentPosition = const LatLng(0, 0);
   bool isLoading = false;
 
   @override
-  void initState()  {
-    authController.getDriverProfileController();
-    setState(() {
-      init();
-    });
-    setCustomerMarkerIcon();
-    _addCurrentLocationMarker();
+  void initState() {
     super.initState();
+    authController.getDriverProfileController();
+    init();
+    setDriverMarkerIcon();
+    _addCurrentLocationMarker();
     _checkLocationPermissions();
   }
 
@@ -55,27 +53,27 @@ class _OpenBookingState extends State<OpenBooking> {
       Marker(
         markerId: MarkerId('current_location'),
         position: currentPosition,
-        icon: CurrentLocationIcon,
+        icon: currentLocationIcon,
       ),
     ].toSet();
   }
 
   void _addCurrentLocationMarker() {
-    if (CurrentLocationIcon != null && currentPosition != null) {
+    if (currentLocationIcon != null && currentPosition != null) {
       setState(() {
         _markers().add(
           Marker(
             markerId: MarkerId('current_location'),
             position: currentPosition,
-            icon: CurrentLocationIcon,
+            icon: currentLocationIcon,
           ),
         );
       });
     }
   }
 
-  void setCustomerMarkerIcon() async {
-    final ByteData byteData = await rootBundle.load('assets/icons/user_icon.jpg');
+  void setDriverMarkerIcon() async {
+    final ByteData byteData = await rootBundle.load('assets/icons/driver_icon.jpg');
     final img.Image? image = img.decodeImage(byteData.buffer.asUint8List());
 
     // Resize the image
@@ -91,11 +89,11 @@ class _OpenBookingState extends State<OpenBooking> {
 
     final BitmapDescriptor icon = await BitmapDescriptor.fromBytes(resizedUint8List!);
     setState(() {
-      CurrentLocationIcon = icon;
+      currentLocationIcon = icon;
     });
   }
 
-  Future<void> init() async {
+  void init() async {
     await authController.getDriverProfileController();
     setState(() {
       isLoading = false;
@@ -226,7 +224,21 @@ class _OpenBookingState extends State<OpenBooking> {
                             child: Container(
                               alignment: Alignment.center,
                               padding: EdgeInsets.symmetric(vertical: 8),
-                              child: const Text("បេីកការទទួលការកក់", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                              child:  Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text(
+                                    "បេីកទទួលការកក់",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Icon(Icons.arrow_forward, color: Colors.white),
+                                ],
+                              ),
                             ),
                           ),
                         ],

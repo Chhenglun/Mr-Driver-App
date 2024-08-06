@@ -2,13 +2,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
+import 'package:scholarar/controller/booking_process_controller.dart';
 import 'package:scholarar/controller/splash_controller.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/screen/account/singin_account_screen.dart';
 import 'package:scholarar/view/screen/account/waiting_screen.dart';
+import 'package:scholarar/view/screen/booking/driver_go_to_passenger_screen.dart';
 import 'package:scholarar/view/screen/booking/opening_booking.dart';
+import 'package:scholarar/view/screen/booking/driver_start_pick_passenger_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../booking/open_booking.dart';
 
@@ -22,7 +25,9 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   SharedPreferences? sharedPreferences;
   AuthController authController = Get.find<AuthController>();
+  BookingProcessController bookingController = Get.find<BookingProcessController>();
   SplashController splashController = Get.find<SplashController>();
+
   bool isLoading = false;
 
   @override
@@ -52,13 +57,19 @@ class _SplashScreenState extends State<SplashScreen> {
                 if (deviceToken == null || deviceToken.isEmpty) {
                   print("User has no device token, navigating to OpenBooking");
                   nextScreenReplace(context, OpenBooking());
+
                 } else {
-                  print("User has device token, navigating to OpeningBooking");
+                  await bookingController.getTripInfo(bookingController.tripID);
+                  final status = bookingController.tripInfo?["status"];
+                  if (status == "requested"){
+                    nextScreenNoReturn(Get.context, DriverPickPassenger());
+                  }
+                  print("User not approved, navigating to WaitingScreen");
                   nextScreenReplace(context, OpeningBooking());
                 }
               } else {
-                print("User not approved, navigating to WaitingScreen");
-                nextScreenReplace(context, WaitingScreen());
+                // I want to take status to use here
+              nextScreen(context, WaitingScreen());
               }
             } else {
               print("User details are null");
