@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:scholarar/controller/auth_controller.dart';
 import 'package:scholarar/util/color_resources.dart';
 import 'package:scholarar/util/next_screen.dart';
+import 'package:scholarar/view/screen/chat/contact_us.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../booking/open_booking.dart';
 
 class WaitingScreen extends StatefulWidget {
@@ -43,12 +45,31 @@ class _WaitingScreenState extends State<WaitingScreen> {
       });
     }
   }
+  Uri telegramUri = Uri.parse('https://t.me/TaiiHor');
+  Future<void> TelegramUs() async {
+    if (await canLaunchUrl(telegramUri)) {
+      await launchUrl(telegramUri);
+    } else {
+      throw 'Could not launch $telegramUri';
+    }
+  }
+  Uri phoneNumber = Uri(scheme: 'tel', path: '0965482772');
+  Future<void> callNumber() async {
+    await launchUrl(phoneNumber);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorResources.secondaryColor,
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            nextScreen(context, WaitingScreen());
+          },
+          icon: Icon(Icons.arrow_back),
+          color: ColorResources.primaryColor,
+        ),
         centerTitle: true,
         backgroundColor: ColorResources.primaryColor,
         title: Text("សូមមេត្តារង់ចាំការយល់ព្រមពីក្រុមការងារ", style: TextStyle(color: Colors.white,fontSize: 16)),
@@ -96,6 +117,17 @@ class _WaitingScreenState extends State<WaitingScreen> {
                 CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(ColorResources.primaryColor,),
                 ),
+              ContactButton(
+                onPressed: TelegramUs,
+                icon: Icons.telegram,
+                text: 'ទំនាក់ទំនងយេីងតាមតេឡេក្រាម', color: ColorResources.blueColor,
+              ),
+              SizedBox(height: 16),
+              ContactButton(
+                onPressed: callNumber,
+                icon: Icons.phone,
+                text: 'ទំនាក់ទំនងយេីងតាមលេខទូរស័ព្ទ', color: Colors.green,
+              ),
             ],
           ),
         ),

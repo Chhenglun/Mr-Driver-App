@@ -104,7 +104,7 @@ class ContactButton extends StatelessWidget {
     return Container(
       width: Get.width,
       height: 60,
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
@@ -118,7 +118,7 @@ class ContactButton extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: TextStyle(fontSize: 20, color: ColorResources.whiteColor),
+                style: TextStyle(fontSize: 16, color: ColorResources.whiteColor),
                 textAlign: TextAlign.start,
               ),
             ),

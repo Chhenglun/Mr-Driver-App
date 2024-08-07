@@ -1,9 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
-
-
-
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
-
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -27,20 +21,16 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-String urlImagProfile =
-    'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
+String urlImagProfile = 'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png';
 
 class _ProfileScreenState extends State<ProfileScreen> {
   AuthController authController = Get.find<AuthController>();
-  final baseUrl = "http://ec2-54-82-25-173.compute-1.amazonaws.com:8000/api/users/profile";
   bool isLoading = false;
 
   @override
   void initState() {
-    setState(() {
-      init();
-    });
     super.initState();
+    init();
   }
 
   Future<void> init() async {
@@ -75,33 +65,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
         print("User Details: $item"); // Debug print to ensure data is fetched
         return Scaffold(
           backgroundColor: ColorResources.primaryColor,
-          body: isLoading != false
+          body: isLoading
               ? Center(child: CircularProgressIndicator())
               : _buildBody(authController),
         );
       },
     );
   }
-//Todo: buildBody
+
   Widget _buildBody(AuthController authController) {
-    var userDetails = authController.userDriverMap;
-    print("aaa ${userDetails}");
+    var userDetails = authController.userDriverMap?['userDetails'];
+    print("User Details Map: $userDetails");
+
     if (userDetails == null) {
       return Center(child: CircularProgressIndicator());
     }
-    //Todo: buildBackground
+
     return SafeArea(
       child: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
         child: Container(
-            width: Get.width,
-            height: Get.height,
-            color: ColorResources.primaryColor,
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                    Expanded(child: Container(
+          width: Get.width,
+          height: Get.height,
+          color: ColorResources.primaryColor,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child: Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,74 +104,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                IconButton(onPressed: (){
+                                IconButton(onPressed: () {
                                   Get.back();
-                                }, icon: FaIcon(FontAwesomeIcons.angleLeft, color: ColorResources.whiteColor,)),
-                                Text('ត្រឡប់ក្រោយ', style: GoogleFonts.notoSerifKhmer(fontSize: 14, color: ColorResources.whiteColor),),
+                                }, icon: FaIcon(FontAwesomeIcons.angleLeft, color: ColorResources.whiteColor)),
+                                Text('ត្រឡប់ក្រោយ', style: GoogleFonts.notoSerifKhmer(fontSize: 14, color: ColorResources.whiteColor)),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    )),
-                    Expanded(child: Container(
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
                       width: Get.width,
                       height: Get.height,
                       color: ColorResources.whiteBackgroundColor,
-                    )),
-                  ],
-                ),
-                //Todo: Profile
-                Positioned(
-                  top: Get.height * 0.03,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SizedBox(
-                      width: Get.width,
-                      height: Get.height,
-                      child: Stack(
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-
-                              Container(
-                                color: ColorResources.primaryColor,
-                                height: 100,
-                                width: Get.width,
-                              ),
-                              // SizedBox(height: 90),
-                              Expanded(
-                                child:_buildProfile(authController),
-                              ),
-
-                            ],
-                          ),
-                          //write me center left
-                          Positioned(
-                            top: 50,  // Adjust the vertical position as needed
-                            child: _buildImageProfile(authController),
-                          ),
-                        ],
-                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: Get.height * 0.03,
+                left: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    width: Get.width,
+                    height: Get.height,
+                    child: Stack(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              color: ColorResources.primaryColor,
+                              height: 100,
+                              width: Get.width,
+                            ),
+                            Expanded(
+                              child: _buildProfile(authController),
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          top: 50,
+                          child: _buildImageProfile(authController),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            )
+              ),
+            ],
+          ),
         ),
-
-        // child: _buildProfile(authController),
       ),
     );
   }
-  //Todo : buildImageProfile
+
   Widget _buildImageProfile(AuthController authController) {
-    var userNextDetails = authController.userDriverMap?['userDetails'];
-    var userDetails = authController.userDriverMap;
+    var profileImageUrl = authController.userDriverMap?['userDetails']?['profile_image_url'] ?? urlImagProfile;
     return Container(
       padding: EdgeInsets.only(right: 20),
       alignment: Alignment.center,
@@ -195,7 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: CachedNetworkImageProvider(urlImagProfile),
+                image: CachedNetworkImageProvider(profileImageUrl),
                 fit: BoxFit.cover,
               ),
             ),
@@ -209,18 +196,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
-
   }
-  //Todo: buildProfile
+
   Widget _buildProfile(AuthController authController) {
-    var userNextDetails = authController.userDriverMap?['userDetails'];
-    var userDetails = authController.userDriverMap;
-    final idCardImage = userDetails?['id_card_image'];
-    final drivingLicenseImage = userDetails?['driving_license_image'];
-    final idCardImageUrl = baseUrl + ("/$idCardImage");
-    final drivingLicenseImageUrl = baseUrl + ("/$drivingLicenseImage");
-    print('ID Card Image URL: $idCardImageUrl');
-    print('Driving License Image URL: $drivingLicenseImageUrl');
+    var userDetails = authController.userDriverMap?['userDetails'];
+
+    dynamic idCardImageUrl = userDetails?['id_card_image_url'];
+    dynamic drivingLicenseImageUrl = userDetails?['driving_license_image_url'];
+    print("idCardImageUrl: $idCardImageUrl");
+    print("drivingLicenseImageUrl: $drivingLicenseImageUrl");
+
     return userDetails != null
         ? Container(
       decoration: BoxDecoration(
@@ -252,7 +237,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               SizedBox(height: 16),
-              // Todo: ListTile of Profile
               Container(
                 height: Get.height * 0.6,
                 child: SingleChildScrollView(
@@ -261,37 +245,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       CustomListWidget.customListTile(
-                        title: userNextDetails?['first_name'] ?? "N/A",
+                        title: userDetails['first_name'] ?? "N/A",
                         iconleading: Icons.person,
                         onPress: () {},
                       ),
                       SizedBox(height: 8),
                       CustomListWidget.customListTile(
-                        title: userNextDetails?['last_name'] ?? "N/A",
+                        title: userDetails['last_name'] ?? "N/A",
                         iconleading: Icons.person,
                         onPress: () {},
                       ),
                       SizedBox(height: 8),
                       CustomListWidget.customListTile(
                         iconleading: Icons.email,
-                        title: authController.userDriverMap?['email'] ?? "N/A",
+                        title: userDetails['email'] ?? "N/A",
                         onPress: () {},
                       ),
                       SizedBox(height: 16),
                       CustomListWidget.customListTile(
-                        title: userNextDetails?['phone_number'] ?? "N/A",
+                        title: userDetails['phone_number'] ?? "N/A",
                         iconleading: Icons.phone,
                         onPress: () {},
                       ),
                       SizedBox(height: 8),
                       CustomListWidget.customListTile(
-                        title: userNextDetails?['gender'] ?? "N/A",
+                        title: userDetails['gender'] ?? "N/A",
                         iconleading: Icons.wc,
                         onPress: () {},
                       ),
                       SizedBox(height: 8),
                       CustomListWidget.customListTile(
-                        title: formatDateOfBirth(userNextDetails?['date_of_birth']),
+                        title: formatDateOfBirth(userDetails['date_of_birth']),
                         iconleading: Icons.calendar_today,
                         onPress: () {},
                       ),
@@ -313,32 +297,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       SizedBox(height: 16),
-                      drivingLicenseImageUrl != null ? Container(
+                      Container(
                         height: 200,
                         width: Get.width,
                         decoration: BoxDecoration(
                           color: ColorResources.backgroundBannerColor,
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
-                            image: NetworkImage(drivingLicenseImageUrl),
+                            image: NetworkImage(idCardImageUrl),
                             fit: BoxFit.cover,
-                          ),
-                        ),
-                      ) : Container(
-                        height: 200,
-                        width: Get.width,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-
-                        ),
-                        child: Center(
-                          child: Text(
-                            "មិនមានរូបភាពនេះទេ",
-                            style: GoogleFonts.notoSerifKhmer(
-                              fontSize: 16,
-                              color: ColorResources.primaryColor,
-                            ),
                           ),
                         ),
                       ),
@@ -367,26 +334,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: ColorResources.backgroundBannerColor,
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
-                            image: NetworkImage(idCardImageUrl),
+                            image: NetworkImage(drivingLicenseImageUrl),
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
                       SizedBox(height: 32),
-                      //Todo: buttonSaveEditeProfile
                       CustomButtonWidget.buildButtonClick(
                         title: 'កែប្រែព័ត៌មាន',
                         onPress: () {
                           nextScreen(context, EditeProfileScreen());
-                        }, size: 50,
+                        },
+                        size: 50,
                       ),
-                      SizedBox(height: 32,)
-
+                      SizedBox(height: 32),
                     ],
                   ),
                 ),
-              )
-
+              ),
             ],
           ),
         ),

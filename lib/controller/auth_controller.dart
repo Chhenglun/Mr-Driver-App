@@ -494,7 +494,7 @@ class AuthController extends GetxController implements GetxService {
         await _tokenHelper.saveToken(token: token).then((_) async {
          // nextScreen(Get.context!, SplashScreen());
           if(map["driver"]["status_register"] == "waiting") {
-            nextScreenNoReturn(Get.context!, WaitingScreen());
+            nextScreenReplace(Get.context!, WaitingScreen());
           }else {
             nextScreenNoReturn(Get.context!, SplashScreen());
           }

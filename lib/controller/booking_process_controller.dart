@@ -4,7 +4,7 @@ import 'dart:collection';
 
 import 'package:get/get.dart';
 import 'package:path/path.dart';
-import 'package:scholarar/data/repository/get_booking_request.dart';
+import 'package:scholarar/data/repository/booking_process_repository.dart';
 import 'package:scholarar/util/app_constants.dart';
 import 'package:scholarar/util/next_screen.dart';
 import 'package:scholarar/view/custom/custom_drop_down_widget.dart';
