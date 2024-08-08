@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/dimensions.dart';
-import 'package:scholarar/util/style.dart';
+
+import '../../util/color_resources.dart';
+import '../../util/dimensions.dart';
+import '../../util/style.dart';
 
 void customShowTopDropDown(String message, BuildContext context, {bool isError = false, Color? colors}) {
   OverlayEntry overlayEntry = OverlayEntry(

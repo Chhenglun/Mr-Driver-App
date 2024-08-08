@@ -1,6 +1,8 @@
-import 'package:scholarar/data/model/response/language_model.dart';
+
 
 //location
+import 'package:capstone_project2/data/model/response/language_model.dart';
+
 late double latCur;
 late double longCur;
 late double latDir;

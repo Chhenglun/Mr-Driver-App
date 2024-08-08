@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:scholarar/data/api/api_client.dart';
-import 'package:scholarar/util/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../util/app_constants.dart';
+import '../api/api_client.dart';
 
 class TrackingRepository {
   final DioClient dioClient;

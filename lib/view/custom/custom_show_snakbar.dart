@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_if_null_operators
 
 import 'package:flutter/material.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/dimensions.dart';
-import 'package:scholarar/util/style.dart';
+import '../../util/color_resources.dart';
+import '../../util/dimensions.dart';
+import '../../util/style.dart';
 
 void customShowSnackBar(String message, BuildContext context, {bool isError = true, Color? colors}) {
   ScaffoldMessenger.of(context).showSnackBar(

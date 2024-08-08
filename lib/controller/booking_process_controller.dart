@@ -2,24 +2,17 @@
 
 import 'dart:collection';
 
+import 'package:capstone_project2/view/screen/booking/open_booking.dart';
 import 'package:get/get.dart';
-import 'package:path/path.dart';
-import 'package:scholarar/data/repository/booking_process_repository.dart';
-import 'package:scholarar/util/app_constants.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/custom/custom_drop_down_widget.dart';
-import 'package:scholarar/view/custom/custom_show_banner.dart';
-import 'package:scholarar/view/custom/custom_show_snakbar.dart';
-import 'package:scholarar/view/screen/booking/driver_go_to_passenger_screen.dart';
-import 'package:scholarar/view/screen/booking/finish_trip.dart';
-import 'package:scholarar/view/screen/booking/on_going_screen.dart';
-import 'package:scholarar/view/screen/booking/open_booking.dart';
-import 'package:scholarar/view/screen/booking/opening_booking.dart';
-import 'package:scholarar/view/screen/booking/driver_start_pick_passenger_screen.dart';
-import 'package:scholarar/view/screen/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/repository/tracking_repository.dart';
+import '../data/repository/booking_process_repository.dart';
+import '../util/next_screen.dart';
+import '../view/custom/custom_show_banner.dart';
+import '../view/custom/custom_show_snakbar.dart';
+import '../view/screen/booking/driver_go_to_passenger_screen.dart';
+import '../view/screen/booking/on_going_screen.dart';
+import '../view/screen/booking/opening_booking.dart';
 
 class BookingProcessController extends GetxController implements GetxService {
   final GetBookingRequestRepository getBookingRequestController;

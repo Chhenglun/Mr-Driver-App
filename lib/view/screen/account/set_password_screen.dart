@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/view/custom/custom_button_widget.dart';
-import 'package:scholarar/view/custom/custom_textfield_widget.dart';
+
+import '../../../controller/auth_controller.dart';
+import '../../../util/color_resources.dart';
+import '../../custom/custom_button_widget.dart';
+import '../../custom/custom_textfield_widget.dart';
 
 class SetPasswordScreen extends StatefulWidget {
 

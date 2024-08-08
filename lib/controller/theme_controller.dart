@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_print
 
 import 'package:get/get.dart';
-import 'package:scholarar/util/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../util/app_constants.dart';
 
 class ThemeController extends GetxController {
   final SharedPreferences sharedPreferences;

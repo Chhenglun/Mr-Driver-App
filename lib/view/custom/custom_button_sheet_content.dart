@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/util/color_resources.dart';
+
+import '../../util/color_resources.dart';
 
 enum SelectCheckDocumentTypeEnum {
   check1,

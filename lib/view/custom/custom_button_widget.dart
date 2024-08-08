@@ -2,9 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:google_fonts/google_fonts.dart';
-import 'package:scholarar/util/color_resources.dart';
 
+import '../../util/color_resources.dart';
 class CustomButtonWidget {
   // Todo: buildButtonClick
   static Widget buildButtonClick(

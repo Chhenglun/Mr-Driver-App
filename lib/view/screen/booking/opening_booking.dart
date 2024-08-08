@@ -7,13 +7,12 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/controller/booking_process_controller.dart';
-import 'package:scholarar/util/alert_dialog.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../controller/auth_controller.dart';
+import '../../../controller/booking_process_controller.dart';
+import '../../../util/alert_dialog.dart';
+import '../../custom/custom_show_snakbar.dart';
 import 'driver_start_pick_passenger_screen.dart';
 
 class OpeningBooking extends StatefulWidget {

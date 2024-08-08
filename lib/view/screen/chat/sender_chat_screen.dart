@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:scholarar/util/color_resources.dart';
+
+import '../../../util/color_resources.dart';
 
 class SenderChatScreen extends StatefulWidget {
   const SenderChatScreen({super.key});

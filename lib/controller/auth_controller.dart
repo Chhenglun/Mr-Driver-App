@@ -2,27 +2,24 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'package:capstone_project2/util/loading_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:scholarar/data/model/body/auth_model.dart';
-import 'package:scholarar/data/repository/auth_repository.dart';
-import 'package:scholarar/helper/token_helper.dart';
-import 'package:scholarar/util/app_constants.dart';
-import 'package:scholarar/util/loading_dialog.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/app/app_screen.dart';
-import 'package:scholarar/view/custom/custom_show_snakbar.dart';
-import 'package:scholarar/view/screen/account/login_screen.dart';
-import 'package:scholarar/view/screen/account/singin_account_screen.dart';
-import 'package:scholarar/view/screen/splash/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
 
+import '../data/model/body/auth_model.dart';
+import '../data/repository/auth_repository.dart';
+import '../helper/token_helper.dart';
+import '../util/next_screen.dart';
+import '../view/custom/custom_show_snakbar.dart';
+import '../view/screen/account/singin_account_screen.dart';
 import '../view/screen/account/waiting_screen.dart';
+import '../view/screen/splash/splash_screen.dart';
 
 class AuthController extends GetxController implements GetxService {
   final AuthRepository authRepository;
@@ -149,21 +146,6 @@ class AuthController extends GetxController implements GetxService {
     const storage = FlutterSecureStorage();
     String? content = await storage.read(key: "token");
     return content ?? noCache;
-  }
-
-  Future<void> isCheckToken({context, page}) async {
-    try {
-      String token = sharedPreferences.getString(AppConstants.token)!;
-      if (token.isNotEmpty) {
-        print("Hello Profile Token $token");
-        nextScreen(context, page);
-      } else {
-        print("No Token :");
-        nextScreen(context, LoginScreen());
-      }
-    } catch (e) {
-      nextScreen(context, LoginScreen());
-    }
   }
   //Todo: refresh
   void refreshScreen() {

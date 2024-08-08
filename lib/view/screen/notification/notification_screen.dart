@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/style.dart';
+
+import '../../../util/color_resources.dart';
+import '../../../util/style.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});

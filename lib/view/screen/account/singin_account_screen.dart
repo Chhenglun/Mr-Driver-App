@@ -1,12 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
+import 'package:capstone_project2/controller/auth_controller.dart';
+import 'package:capstone_project2/util/next_screen.dart';
+import 'package:capstone_project2/view/screen/account/signup_account_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/custom/custom_show_snakbar.dart';
-import 'package:scholarar/view/screen/account/signup_account_screen.dart';
+
+import '../../../util/color_resources.dart';
+import '../../custom/custom_show_snakbar.dart';
 
 class SignInAccountScreen extends StatefulWidget {
   const SignInAccountScreen({super.key});

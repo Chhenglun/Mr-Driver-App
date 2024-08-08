@@ -1,19 +1,18 @@
 import 'dart:async';
+import 'package:capstone_project2/view/screen/account/waiting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/controller/booking_process_controller.dart';
-import 'package:scholarar/controller/splash_controller.dart';
-import 'package:scholarar/util/app_constants.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/account/singin_account_screen.dart';
-import 'package:scholarar/view/screen/account/waiting_screen.dart';
-import 'package:scholarar/view/screen/booking/driver_go_to_passenger_screen.dart';
-import 'package:scholarar/view/screen/booking/opening_booking.dart';
-import 'package:scholarar/view/screen/booking/driver_start_pick_passenger_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../controller/auth_controller.dart';
+import '../../../controller/booking_process_controller.dart';
+import '../../../controller/splash_controller.dart';
+import '../../../util/app_constants.dart';
+import '../../../util/color_resources.dart';
+import '../../../util/next_screen.dart';
+import '../account/singin_account_screen.dart';
+import '../booking/driver_go_to_passenger_screen.dart';
 import '../booking/open_booking.dart';
+import '../booking/opening_booking.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

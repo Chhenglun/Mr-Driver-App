@@ -2,9 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/data/api/api_client.dart';
-import 'package:scholarar/util/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/api/api_client.dart';
+import '../util/app_constants.dart';
 
 class LocalizationController extends GetxController {
 

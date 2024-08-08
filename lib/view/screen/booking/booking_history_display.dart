@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:scholarar/util/color_resources.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
+
+import '../../../util/color_resources.dart';
 
 class HistoryScreen extends StatefulWidget {
   @override

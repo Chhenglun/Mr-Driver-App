@@ -7,11 +7,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scholarar/controller/booking_process_controller.dart';
-import 'package:scholarar/util/app_constants.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/booking/close_booking.dart';
+
+import '../../../controller/booking_process_controller.dart';
+import '../../../util/app_constants.dart';
+import '../../../util/color_resources.dart';
+import '../../../util/next_screen.dart';
+import 'close_booking.dart';
 
 
 class FinishTrip extends StatefulWidget {

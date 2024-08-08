@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors, curly_braces_in_flow_control_structures
 
 import 'dart:convert';
-import 'package:scholarar/util/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+
+import '../util/app_constants.dart';
 
 class TokenHelper {
   final storage = FlutterSecureStorage();

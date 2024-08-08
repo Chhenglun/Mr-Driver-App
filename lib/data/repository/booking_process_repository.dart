@@ -1,7 +1,8 @@
+import 'package:capstone_project2/util/app_constants.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
-import 'package:scholarar/data/api/api_client.dart';
-import 'package:scholarar/util/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../api/api_client.dart';
 
 class GetBookingRequestRepository{
   final DioClient dioClient;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:scholarar/view/screen/home/driver_accepted.dart';
+import 'driver_accepted.dart';
+
 
 class Waiting extends StatefulWidget {
   const Waiting({super.key});

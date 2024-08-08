@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
+import 'package:capstone_project2/data/model/response/country_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/data/model/response/country_model.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/view/custom/custom_textfield_widget.dart';
+
+import '../../util/color_resources.dart';
+import 'custom_textfield_widget.dart';
 
 enum SelectCountryEnum {
   country,

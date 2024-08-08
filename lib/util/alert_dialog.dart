@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/util/color_resources.dart';
+
+import 'color_resources.dart';
 
 // Todo : CustomNotificationDialog
 Future customNotificationDialog({required BuildContext context,required String title,required String body, void Function()? onTap}) async {

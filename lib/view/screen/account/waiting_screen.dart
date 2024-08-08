@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/chat/contact_us.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../controller/auth_controller.dart';
+import '../../../util/color_resources.dart';
+import '../../../util/next_screen.dart';
 import '../booking/open_booking.dart';
+import '../chat/contact_us.dart';
 
 class WaitingScreen extends StatefulWidget {
   const WaitingScreen({super.key});

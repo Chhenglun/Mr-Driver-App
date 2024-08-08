@@ -7,16 +7,18 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scholarar/controller/booking_process_controller.dart';
-import 'package:scholarar/util/app_constants.dart';
-import 'package:scholarar/util/color_resources.dart';
+
 import 'dart:ui' as ui;
 import 'package:image/image.dart' as img;
 import 'dart:typed_data';
-import 'package:scholarar/util/firebase_api.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/booking/driver_start_pick_passenger_screen.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+
+import '../../../controller/booking_process_controller.dart';
+import '../../../util/app_constants.dart';
+import '../../../util/color_resources.dart';
+import '../../../util/firebase_api.dart';
+import '../../../util/next_screen.dart';
+import 'driver_start_pick_passenger_screen.dart';
 
 class DriverPickPassenger extends StatefulWidget {
   const DriverPickPassenger({super.key});

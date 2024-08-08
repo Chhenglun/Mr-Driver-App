@@ -3,12 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/multipart/form_data.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
-import 'package:scholarar/data/api/api_client.dart';
-import 'package:scholarar/data/model/body/auth_model.dart';
-import 'package:scholarar/util/app_constants.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
+
+import '../../util/app_constants.dart';
+import '../api/api_client.dart';
+import '../model/body/auth_model.dart';
 
 class AuthRepository {
   final DioClient dioClient;

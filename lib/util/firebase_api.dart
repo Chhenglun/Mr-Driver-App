@@ -97,8 +97,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:scholarar/util/app_constants.dart';
 import '../view/app/app_screen.dart';
+import 'app_constants.dart';
 import 'next_screen.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {

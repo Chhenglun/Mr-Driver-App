@@ -10,9 +10,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/style.dart';
+
+import '../../../controller/auth_controller.dart';
+import '../../../util/color_resources.dart';
+import '../../../util/style.dart';
 
 class SignUpAccountScreen extends StatefulWidget {
   const SignUpAccountScreen({super.key});

@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:capstone_project2/controller/auth_controller.dart';
+import 'package:capstone_project2/util/next_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/custom/custom_button_widget.dart';
-import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
 import 'package:intl/intl.dart';
-import 'package:scholarar/view/screen/home/current_location.dart';
-import 'package:scholarar/view/screen/profile/edite_profile_screen.dart';
+
+import '../../../util/color_resources.dart';
+import '../../custom/custom_button_widget.dart';
+import '../../custom/custom_listtile_setting_screen.dart';
+import 'edite_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

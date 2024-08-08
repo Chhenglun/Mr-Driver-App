@@ -1,11 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/material.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/util/style.dart';
-import 'package:scholarar/view/screen/home/current_location.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../../../util/color_resources.dart';
+import '../../../util/next_screen.dart';
+import '../../../util/style.dart';
+import 'current_location.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

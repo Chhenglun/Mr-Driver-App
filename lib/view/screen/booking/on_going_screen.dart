@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
+import 'package:capstone_project2/controller/booking_process_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image/image.dart' as img;
@@ -12,12 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scholarar/controller/booking_process_controller.dart';
-import 'package:scholarar/util/app_constants.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/app/app_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../util/app_constants.dart';
+import '../../../util/color_resources.dart';
 
 class OnGoingScreen extends StatefulWidget {
   const OnGoingScreen({super.key});

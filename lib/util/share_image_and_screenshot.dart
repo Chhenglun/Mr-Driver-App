@@ -9,9 +9,10 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import 'dart:io';
 import 'package:get/get.dart';
-import 'package:scholarar/util/image_gallery_saver.dart';
-import 'package:scholarar/view/custom/custom_show_snakbar.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../view/custom/custom_show_snakbar.dart';
+import 'image_gallery_saver.dart';
 
 class ShareImageAndScreenShot{
 

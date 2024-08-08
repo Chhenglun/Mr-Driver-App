@@ -3,13 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/controller/splash_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/view/screen/booking/open_booking.dart';
-import 'package:scholarar/view/screen/chat/chat_screen.dart';
-import 'package:scholarar/view/screen/home/home_screen.dart';
-import 'package:scholarar/view/screen/profile/profile_screen.dart';
-import 'package:scholarar/view/screen/profile/setting_screen.dart';
+
+import '../../controller/splash_controller.dart';
+import '../../util/color_resources.dart';
+import '../screen/booking/open_booking.dart';
+import '../screen/chat/chat_screen.dart';
+import '../screen/home/home_screen.dart';
+import '../screen/profile/setting_screen.dart';
 
 class AppScreen extends StatefulWidget {
   const AppScreen({super.key});

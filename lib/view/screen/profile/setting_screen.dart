@@ -5,23 +5,23 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:capstone_project2/controller/auth_controller.dart';
+import 'package:capstone_project2/util/color_resources.dart';
+import 'package:capstone_project2/view/screen/profile/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/util/style.dart';
-import 'package:scholarar/view/custom/custom_button_widget.dart';
-import 'package:scholarar/view/custom/custom_listtile_setting_screen.dart';
-import 'package:scholarar/view/screen/booking/booking_history_display.dart';
-import 'package:scholarar/view/screen/chat/contact_us.dart';
-import 'package:scholarar/view/screen/chat/developer_screen.dart';
-import 'package:scholarar/view/screen/chat/notification_screen.dart';
-import 'package:scholarar/view/screen/profile/profile_screen.dart';
+
+import '../../../util/next_screen.dart';
+import '../../../util/style.dart';
+import '../../custom/custom_listtile_setting_screen.dart';
+import '../booking/booking_history_display.dart';
+import '../chat/contact_us.dart';
+import '../chat/developer_screen.dart';
+import '../chat/notification_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});

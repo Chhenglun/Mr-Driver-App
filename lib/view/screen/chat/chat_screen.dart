@@ -1,11 +1,11 @@
+import 'package:capstone_project2/view/screen/chat/sender_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/data/model/body/body_chat_model/avartar_body_chat_model.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/chat/sender_chat_screen.dart';
 
+import '../../../data/model/body/body_chat_model/avartar_body_chat_model.dart';
+import '../../../util/color_resources.dart';
+import '../../../util/next_screen.dart';
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 

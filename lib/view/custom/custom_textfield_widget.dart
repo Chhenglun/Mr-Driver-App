@@ -1,10 +1,11 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/dimensions.dart';
-import 'package:scholarar/util/style.dart';
+
+import '../../controller/auth_controller.dart';
+import '../../util/color_resources.dart';
+import '../../util/dimensions.dart';
+import '../../util/style.dart';
 
 // Todo: CustomTextFieldWidget
 class CustomTextFieldWidget extends StatefulWidget {

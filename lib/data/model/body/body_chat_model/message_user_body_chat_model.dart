@@ -1,4 +1,6 @@
-import 'package:scholarar/data/model/body/body_chat_model/user_body_chat_model.dart';
+
+
+import 'package:capstone_project2/data/model/body/body_chat_model/user_body_chat_model.dart';
 
 class Message {
   final User sender;

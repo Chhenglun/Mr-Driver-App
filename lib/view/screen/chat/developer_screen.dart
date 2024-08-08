@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import '../../../util/color_resources.dart';
 
 class DeveloperScreen extends StatelessWidget {
   final List<Member> members = [

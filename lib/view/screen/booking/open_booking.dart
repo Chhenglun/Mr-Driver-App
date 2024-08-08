@@ -11,14 +11,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image/image.dart' as img;
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/controller/booking_process_controller.dart';
-import 'package:scholarar/util/app_constants.dart';
-import 'package:scholarar/util/firebase_api.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/custom/custom_show_snakbar.dart';
-import 'package:scholarar/view/screen/booking/opening_booking.dart';
-import 'package:scholarar/view/screen/profile/setting_screen.dart';
+
+import '../../../controller/auth_controller.dart';
+import '../../../controller/booking_process_controller.dart';
+import '../../../util/app_constants.dart';
+import '../../../util/firebase_api.dart';
+import '../../../util/next_screen.dart';
+import '../../custom/custom_show_snakbar.dart';
+import '../profile/setting_screen.dart';
+import 'opening_booking.dart';
 
 class OpenBooking extends StatefulWidget {
   const OpenBooking({super.key});

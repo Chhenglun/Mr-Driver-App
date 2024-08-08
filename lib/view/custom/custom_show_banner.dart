@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/dimensions.dart';
-import 'package:scholarar/util/style.dart';
 
+import '../../util/color_resources.dart';
+import '../../util/dimensions.dart';
+import '../../util/style.dart';
 void customShowTopBanner(BuildContext context, String message, {bool isError = true, Color? colors}) {
   final materialBanner = MaterialBanner(
     backgroundColor: Colors.transparent,

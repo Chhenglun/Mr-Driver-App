@@ -1,14 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:capstone_project2/util/next_screen.dart';
+import 'package:capstone_project2/view/screen/account/set_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:scholarar/controller/auth_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/custom/custom_button_widget.dart';
-import 'package:scholarar/view/custom/custom_textfield_widget.dart';
-import 'package:scholarar/view/screen/account/set_password_screen.dart';
+
+import '../../../controller/auth_controller.dart';
+import '../../../util/color_resources.dart';
+import '../../custom/custom_button_widget.dart';
+import '../../custom/custom_textfield_widget.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});

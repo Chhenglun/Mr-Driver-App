@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:capstone_project2/view/screen/booking/driver_start_pick_passenger_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,10 @@ import 'dart:typed_data';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:scholarar/controller/booking_process_controller.dart';
-import 'package:scholarar/util/color_resources.dart';
-import 'package:scholarar/util/next_screen.dart';
-import 'package:scholarar/view/screen/booking/driver_start_pick_passenger_screen.dart';
+
+import '../../../controller/booking_process_controller.dart';
+import '../../../util/color_resources.dart';
+import '../../../util/next_screen.dart';
 
 class CloseBooking extends StatefulWidget {
   const CloseBooking({super.key});

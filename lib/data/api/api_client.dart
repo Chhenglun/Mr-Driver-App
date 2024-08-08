@@ -3,8 +3,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:get/get.dart';
-import 'package:scholarar/data/model/response/base/error_response.dart';
-import 'package:scholarar/util/app_constants.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
@@ -12,6 +10,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:path/path.dart' show basename;
 import 'package:http_parser/http_parser.dart' show MediaType;
+
+import '../../util/app_constants.dart';
+import '../model/response/base/error_response.dart';
 
 class DioClient extends GetxService {
   final String? appBaseUrl;

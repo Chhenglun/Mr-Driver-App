@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import 'package:scholarar/helper/responsive_helper.dart';
+
+import '../helper/responsive_helper.dart';
 
 class Dimensions {
   static double fontSizeextraExtraSmall = Responsive.isTab() ? 10 : (Get.width >= 1300 ? 12 : 8);

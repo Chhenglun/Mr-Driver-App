@@ -3,7 +3,8 @@
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:scholarar/view/custom/custom_show_snakbar.dart';
+
+import '../view/custom/custom_show_snakbar.dart';
 
 class NetworkInfo {
   final Connectivity connectivity;
