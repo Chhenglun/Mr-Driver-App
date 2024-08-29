@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:capstone_project2/util/loading_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -150,6 +151,36 @@ class AuthController extends GetxController implements GetxService {
   //Todo: refresh
   void refreshScreen() {
     update(); // This will rebuild the GetBuilder or GetX widget that uses this controller
+  }
+  //Todo: LoginWithFacebook
+  Future<void> loginWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        // Retrieve the access token and user data
+        final AccessToken accessToken = result.accessToken!;
+        final userData = await FacebookAuth.instance.getUserData();
+
+        // Use the access token and user data in your app
+        //print("Access Token: ${accessToken.token}");
+        print("AccessToken : $accessToken");
+        print("User Data: $userData");
+
+        // TODO: Handle login logic (e.g., send data to your server, navigate to another screen)
+      } else {
+        print("Facebook login failed: ${result.message}");
+      }
+    } catch (e) {
+      print("Error during Facebook login: $e");
+    }
+  }
+
+  //Todo: logout account in facebook
+  Future<void> logOut() async {
+    await FacebookAuth.instance.logOut();
+    print("User logged out");
+    // TODO: Handle post-logout logic (e.g., clear user data, navigate to login screen)
   }
 
 
@@ -434,8 +465,8 @@ class AuthController extends GetxController implements GetxService {
     required String phoneNumber,
     required String gender,
     required String dateOfBirth,
-    required XFile iDCard,
-    required XFile drivingLicense
+    //required XFile iDCard,
+    //required XFile drivingLicense
   }) async {
     try {
       _isLoading = true;
@@ -447,9 +478,9 @@ class AuthController extends GetxController implements GetxService {
         password,
         phoneNumber,
         gender,
-        dateOfBirth,
-        iDCard,
-        drivingLicense,
+        dateOfBirth
+       // iDCard,
+       // drivingLicense,
       );
       if (apiResponse.body['status'] == 201 && apiResponse.body['status_code'] == "success") {
         print("status  : ${apiResponse.body['status']}");

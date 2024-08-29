@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mr Driver</string>
+    <string name="facebook_app_id">1021292062527720</string>
+    <string name="fb_login_protocol_scheme">fb1021292062527720</string>
+</resources>

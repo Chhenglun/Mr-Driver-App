@@ -104,8 +104,8 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
         password: _passwordController.text,
         gender: _selectedGender!,
         dateOfBirth: _dateController.text,
-        iDCard: _imageDriverID!,
-        drivingLicense: _imageDriverLicense!,
+        //iDCard: _imageDriverID!,
+        //drivingLicense: _imageDriverLicense!,
       );
     } else {
       Get.snackbar(
@@ -211,9 +211,9 @@ class _SignUpAccountScreenState extends State<SignUpAccountScreen> {
                     SizedBox(height: 16),
                     _buildPasswordField("ពាក្យសម្ងាត់", _passwordController, obscureText, () => setState(() => obscureText = !obscureText), "ពាក្យសម្ងាត់ត្រូវមានច្រើនជាង 9 តួអក្សរ"),
                     SizedBox(height: 16),
-                    _buildImagePicker("អត្តសញ្ញាញប័ណ្ឌ", _imageDriverID, pickImageID),
+                    //_buildImagePicker("អត្តសញ្ញាញប័ណ្ឌ", _imageDriverID, pickImageID),
                     SizedBox(height: 16),
-                    _buildImagePicker("ប័ណ្ឌបើកបរ", _imageDriverLicense, pickImageDriverLicense),
+                    //_buildImagePicker("ប័ណ្ឌបើកបរ", _imageDriverLicense, pickImageDriverLicense),
                     SizedBox(height: 16),
                     Row(
                       children: [

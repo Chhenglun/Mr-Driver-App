@@ -73,6 +73,8 @@ dependencies:
   firebase_app_installations: ^0.3.0+4
   firebase_messaging: ^15.0.4
   flutter_polyline_points: ^2.0.0
+  flutter_facebook_auth: ^7.0.1
+  flutter_login_facebook: ^2.0.1
 
 
 

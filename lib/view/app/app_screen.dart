@@ -96,8 +96,7 @@ class _AppScreenState extends State<AppScreen> {
           ),
           NavigationDestination(
             icon: FaIcon(FontAwesomeIcons.car, color: Colors.white, size: 17,),
-            selectedIcon:
-                FaIcon(FontAwesomeIcons.car, color: Colors.white, size: 29),
+            selectedIcon:FaIcon(FontAwesomeIcons.car, color: Colors.white, size: 29),
             label: 'Booking'.tr,
           ),
           NavigationDestination(

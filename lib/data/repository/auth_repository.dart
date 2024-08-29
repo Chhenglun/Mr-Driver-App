@@ -57,6 +57,33 @@ class AuthRepository {
       String firstName , String lastName ,String email ,
       String password , String phoneNumber ,
       String gender , String dateOfBirth,
+      )
+  async{
+    Map<String, dynamic> body = {
+      "first_name": firstName,
+      "last_name": lastName,
+      "email": email,
+      "password": password,
+      "phone_number": phoneNumber,
+      "date_of_birth": dateOfBirth,
+      "gender": gender,
+    };
+    try {
+      Response response = await dioClient.postData(
+        AppConstants.register, body,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      );
+      return response;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+  Future<Response> registerDriver1 (
+      String firstName , String lastName ,String email ,
+      String password , String phoneNumber ,
+      String gender , String dateOfBirth,
       XFile iDCard , XFile drivingLicense
       )
   async{

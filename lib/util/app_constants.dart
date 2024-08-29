@@ -11,7 +11,7 @@ String? frmTokenPublic;
 class AppConstants {
   static const String theme = "authenticator_theme";
   static const String appName = "Authenticator";
-  static const String baseURL = "http://ec2-54-82-25-173.compute-1.amazonaws.com:8000";
+  static const String baseURL = "https://mr-driver-api-image-997109203432.asia-east1.run.app";
   static const String loginUrlNew = "/api/users/login";
   static const String registerDriver = "/api/users/register-driver";
   static const String getDriverProfile = "/api/users/profile";

@@ -3,7 +3,10 @@
 import 'package:capstone_project2/controller/auth_controller.dart';
 import 'package:capstone_project2/util/next_screen.dart';
 import 'package:capstone_project2/view/screen/account/signup_account_screen.dart';
+import 'package:capstone_project2/view/screen/booking/open_booking.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 
 import '../../../util/color_resources.dart';
@@ -62,6 +65,59 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
       customShowSnackBar('Invalid Email Phone or Password!'.tr, Get.context!, isError: true);
     }
   }
+  final storage = FlutterSecureStorage();
+
+  Future<void> loginWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        final AccessToken accessToken = result.accessToken!;
+        final userData = await FacebookAuth.instance.getUserData();
+
+        // Save user data and token securely
+        //await storage.write(key: 'token', value: appConstance.token);
+        await storage.write(key: 'userData', value: userData.toString());
+
+        // Navigate to the next screen or update the UI
+        nextScreenNoReturn(Get.context,OpenBooking());
+      } else {
+        print("Facebook login failed: ${result.message}");
+        _showErrorSnackbar("Facebook login failed");
+      }
+    } catch (e) {
+      print("Error during Facebook login: $e");
+      _showErrorSnackbar("Error during Facebook login");
+    }
+  }
+
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+    ));
+  }
+  //SignInAccountScreen with facebook
+  /*Future<void> loginWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        final AccessToken accessToken = result.accessToken!;
+        final userData = await FacebookAuth.instance.getUserData();
+        print("Access Token: $accessToken");
+        print("User Data: $userData");
+
+        // TODO: Navigate to another screen or update the UI with user data
+      } else {
+        customShowSnackBar('Facebook login failed: ${result.message}', context, isError: true);
+      }
+    } catch (e) {
+      customShowSnackBar('Error during Facebook login: $e', context, isError: true);
+      print("Error during Facebook login: $e");
+    }
+  }*/
+
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +289,13 @@ class _SignInAccountScreenState extends State<SignInAccountScreen> {
                               child: Text('ចុះឈ្មោះគណនី'),
                             ),
                           ],
+                        ),
+                        IconButton(
+                          onPressed: loginWithFacebook,
+                          icon: Icon(Icons.facebook, color: Colors.blue,size: 70),
+
                         )
+
                       ],
                     ),
                   ),
